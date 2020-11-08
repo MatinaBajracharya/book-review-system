@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+html, body{
+  /* height: 100%;
+  width: 100%; */
+  font-family: 'Poppins', sans-serif;
+  /* color: #222;*/
+  background-color: #f8f9fa; 
+}
+
+
+/*Carousel*/
+.carousel-inner img{
+  height: 95vh;
+}
+
+.carousel-caption{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.carousel-caption h1{
+  font-size: 500%;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 10px #000;
+}
+
+.carousel-caption h3{
+  font-size: 200%;
+  font-weight: 500;
+  text-shadow: 1px 1px 15px #000;
+  padding-bottom: 1rem;
+}
+
+.carousel img{
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+}
+
+.btn-primary{
+  background-color: #6648b1;
+  border: 1px solid #6648b1;
+}
+
+.btn-primary:hover{
+  background-color: #563d7c;
+  border: 1px solid #563d7c;
+}
+
+/*Welcome*/
+.paddding{
+  padding-bottom: 2rem;
+}
+
+.welcome{
+  width: 75%;
+  margin: 0 auto;
+  padding-top: 2rem;
+}
+
+.welcome hr, .share hr, .connect hr{
+  border-top: 2px solid #b4b4b4;
+  width: 95%;
+  margin-top: .3rem;
+  margin-bottom: 1rem;
+}
+
+/*Numbers*/
+.numbers .rect{
+  position: relative;
+  z-index: 1;
+  background: white;
+  width: 17rem;
+  height: 12rem;
+  padding-top: 3.5vmin;
+  margin: 1rem;
+  border-radius: .5em;
+  box-shadow: 1px 2px 50px 0px rgba(255, 0, 0, 0.349);
+}
+
+.numbers .rect h1{
+  font-size: 5rem;
+  color: tomato;
+}
+
+.numbers .rect p{
+  font-family: 'Poppins', sans-serif ;
+}
+
+/*Testimonials*/
+.testimonials
+{
+    border-left: 4px solid #7b1798;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+.testimonials img
+{
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    margin: 0 10px;
+}
+.user-details
+{
+    display: inline-block;
+    font-size: 12px;
+}
+
+/*Connect*/
+.social a{
+  font-size: 4.5em;
+  padding: 3rem;
+}
+
+.fa-facebook{
+  color: #3b5998;
+}
+
+.fa-twitter{
+  color: #00aced;
+}
+
+.fa-instagram{
+  color: #517fa8;
+}
+
+.fa-facebook:hover, .fa-instagram:hover, .fa-twitter:hover{
+  color: #d5d5d5;
+}
+
+/*Footer*/
+#footer
+{
+    background-image: linear-gradient(to right, #434343 0%, black 100%);
+    color: #fff;
+}
+.footer-img
+{
+    width: 100%;
+}
+.footer-box
+{
+    padding: 20px;
+}
+.footer-box img
+{
+    width: 120px;
+    margin-bottom: 20px;
+}
+.footer-box .fa
+{
+    margin-right: 8px;
+    font-size: 25px;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    padding-top: 7px;
+    border-radius: 2px;
+    background-image: linear-gradient(to right, #a517ba,#5f1782);
+}
+.footer-box .form-control
+{
+    box-shadow: none !important;
+    border: none;
+    border-radius: 0;
+    margin-top: 25px;
+    max-width: 250px;
+}
+.footer-box .btn-primary
+{
+    box-shadow: none !important;
+    border: none;
+    border-radius: 0;
+    margin-top: 30px;
+    background-image: linear-gradient(to right, #a517ba,#5f1782);
+}
+
+hr
+{
+    background-color: #fff;
+}
+.copyright
+{
+    margin-bottom: 0;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+
+.copyright a{
+    color: #ffed00;
+}
+
+
+
+
+/*---Media Queries --*/
+@media (max-width: 992px) {
+
+  }
+@media (max-width: 768px) {
+  
+}
+@media (max-width: 576px) {
+  
+}
+
+
+/*---Firefox Bug Fix --*/
+.carousel-item {
+  transition: -webkit-transform 0.5s ease;
+  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, -webkit-transform 0.5s ease;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+}
+/*--- Fixed Background Image --*/
+figure {
+  position: relative;
+  width: 100%;
+  height: 60%;
+  margin: 0!important;
+}
+.fixed-wrap {
+  clip: rect(0, auto, auto, 0);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#fixed {
+  background-image: url('img/mac.png');
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  will-change: transform;
+}
+/*--- Bootstrap Padding Fix --*/
+[class*="col-"] {
+    padding: 1rem;
+}
+
+
+
+
+
+
+
+
+
+
+

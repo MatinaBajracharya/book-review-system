@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Post
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # Create your views here.
@@ -12,6 +13,7 @@ def home(request):
 def about(request):
     return render(request, 'forum/about.html', {'title': 'About'})
 
+@login_required
 def forum(request):
     context = {
         'posts': Post.objects.all(),
