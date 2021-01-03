@@ -7,14 +7,84 @@
             <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
             <small class="text-muted">{{ object.date_posted|date:"F d, Y"}}</small>
             {% if object.author == user %}
-                <div>
-                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
-                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
+              <!-- Default dropleft button -->
+              <div class="btn-group dropleft">
+                <button type="button" class="settings btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="fas fa-cogs"></i>
+                </button>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="{% url 'post-update' object.id %}"><i class="fas fa-pencil-alt"></i> Update</i></a> 
+                  <a class="dropdown-item" href="{% url 'post-delete' object.id %}"><i class="fas fa-trash"></i> Delete</a>
                 </div>
+              </div>
             {% endif %}
           </div>
           <h2 class="article-title">{{ object.title }}</h2>
           <p class="article-content">{{ object.content }}</p>
+            <h5 class="card-title">
+              <form action="{% url 'likes' %}" method="POST" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="post_id" value="{{ object.id }}">
+                {% if request.user not in object.likes.all %}
+                <button type="submit" style="border: none; background-color: transparent;"><i class="far fa-heart" style="color: black;"></i></button>
+                {% else %}
+                <button type="submit" style="border: none; background-color: transparent;"><i class="fas fa-heart" style="color: red;"></i></button>
+                {% endif %}
+              </form>
+              <i class="far fa-comment"></i>
+            </h5>
+              <p>{{ object.likes.all.count }} Likes</p><hr>
+              {% if user.is_authenticated %}
+                {% for c in comments %}
+                  <img class="rounded-circle article-img" src="{{ c.0.user.profile.image.url }}" alt="">
+                  <p class="user card-text"><strong>{{ c.0.user.username }}</strong> {{c.0.comment}} <br> <small>{{ c.0.time }}</small></p>
+                  
+                  <p id="{{ c.0.id }}"><button onclick="ReplyForm('{{ c.0.id }}')" class="reply">Reply</button></p>
+                  {% for subc in c.1 %}
+                    <img class="ml-5 rounded-circle article-img" src="{{ subc.user.profile.image.url }}" alt="">
+                    <p class="subcomment"><strong>{{ subc.user.username }}</strong> {{subc.comment}} <br> <small>{{ subc.time }}</small></p>
+                    <br>
+                    
+                 {% endfor %}  
+                {% endfor %}
+                <hr>
+                <div class="comment-form-wrap">
+                  <h4>Leave a comment</h4>
+                  <form method="POST" class="p-3 bg-light">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <img class="rounded-circle article-img" src="{{ request.user.profile.image.url }}" alt="">
+                      <label for="message">Comment</label> 
+                      <textarea name="comm" id="message" cols="30" rows="3" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <input type="submit" value="Post Comment" class="btn btn-primary">
+                    </div>
+                  </form>
+                </div>
+              {% else %}
+                <div class="text-center">
+                  <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.appletips.nl%2Fwp-content%2Fuploads%2F2015%2F07%2Floadingapp.png&f=1&nofb=1" alt="" class="mx-auto d-block" style="height: 10%; width: 10%;">
+                  <h3>Cannot interact with the post?</h3> 
+                  <p>Please <a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a> to do so! </p>
+                </div>  
+              {% endif %} 
         </div>
     </article>
+    <script type="text/javascript">
+      function ReplyForm(id){
+        let elm = `<form method="POST" class="p-3 bg-light">
+                    {% csrf_token %}
+                      <div class="form-group">
+                      <input type='text' value='${id}' name = 'comm_id' style="display:none;" readonly/>
+                        <label for="message">Reply</label>
+                        <textarea name="comm" id="message" cols="30" rows="3" class="form-control"></textarea>
+                      </div>
+                      <div class="form-group">
+                        <input type="submit" value="Post Comment" class="btn btn-primary">
+                      </div>
+                  </form>`;
+                  document.getElementById(id).innerHTML = elm;
+      }
+    </script>
 {% endblock content %}

@@ -5,11 +5,24 @@
       <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="">
         <div class="media-body">
           <div class="article-metadata">
-            <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+            <a class="mr-2" href="{% url 'profile' post.author_id %}">{{ post.author }}</a>
             <small class="text-muted">{{ post.date_posted|date:"F d, Y"}}</small>
           </div>
           <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
           <p class="article-content">{{ post.content }}</p>
+          <h5>
+            <form action="{% url 'likes' %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="post_id" value="{{ post.id }}">
+              {% if user not in post.likes.all %}
+              <button type="submit" style="border: none; background-color: transparent;"><i class="far fa-heart" style="color: black;"></i></button>
+              {% else %}
+              <button type="submit" style="border: none; background-color: transparent;"><i class="fas fa-heart" style="color: red;"></i></button>
+              {% endif %}
+            </form>
+          </h5>
+          <strong>{{ post.likes.all.count }} Likes</strong>
+          <strong>{{ comment }} Comments</strong>
         </div>
     </article>
     {% endfor %}

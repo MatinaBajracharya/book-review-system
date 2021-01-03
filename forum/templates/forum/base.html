@@ -11,7 +11,29 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'forum/main.css' %}">
+    <style>
+      .info p {
+        margin: 4px 0 0 0;
+      }
 
+      .deactivate {
+        border-radius: 0;
+        padding: 15px 85px 15px 85px;
+      }
+
+      .info {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background: rgba(51, 51, 51, 0.9);
+        color: #fff;
+        margin: 0 0 0 0px;
+        padding: 0 0 0 25px;
+      }
+
+    </style>
+    
     <!-- Title -->
     {% if title %}
         <title>Book Review - {{ title }}</title>
@@ -22,9 +44,9 @@
     <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 </head>
     <body>
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand mr-4" href="{% url 'forum-home' %}"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2018%2F04%2FEOS_logo_coin.png&f=1&nofb=1" width="30" height="30" class="d-inline-block align-top" alt=""> Django Blog</a>
+            <a class="navbar-brand mr-4" href="{% url 'forum-home' %}"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2018%2F04%2FEOS_logo_coin.png&f=1&nofb=1" width="30" height="30" class="d-inline-block align-top" alt=""> Books</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
                 aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -39,7 +61,7 @@
                 <div class="navbar-nav">
                     {% if user.is_authenticated %}
                     <a class="nav-item nav-link" href="{% url 'post-create' %}">New Post</a>
-                    <a class="nav-item nav-link" href="{% url 'profile'%}">Profile</a>
+                    <a class="nav-item nav-link" href="{% url 'profile' request.user.id %}">Profile</a>
                     <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
                     {% else %}
                     <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>

@@ -4,20 +4,20 @@
 <div class="container profile">
     <div class="profile-header">
         <div class="profile-img">
-            <img src="{{ user.profile.image.url }}" alt="">
+            <img src="{{ u_id.profile.image.url }}" alt="">
         </div>
         <div class="profile-nav-info">
-            <h3 class="user-name">{{ user.first_name }} {{ user.last_name }}</h3>
+            <h3 class="user-name">{{ u_id.first_name }} {{ u_id.last_name }}</h3>
             <div class="address">
-                <p class="state">@{{ user.username }}</p>
+                <p class="state">@{{ u_id.username }}</p>
             </div>
         </div>
     </div>
     <div class="main-bd">
         <div class="profile-side">
-            <div class="user-mail"><i class="fas fa-envelope"></i>{{ user.email }}</div>
+            <div class="user-mail"><i class="fas fa-envelope"></i>{{ u_id.email }}</div>
             <div class="user-bio">
-                <p class="bio">{{ user.profile.bio }}</p>
+                <p class="bio">{{ u_id.profile.bio }}</p>
             </div>
             <div class="profile-btn">
                 <button class="createbtn">
@@ -35,9 +35,8 @@
             </div>
             <div class="profile-body">
                 <div class="profile-posts tab">
-                    <h1>Your Posts</h1>
-                    <h1 class="mb-3">Post by {{ view.kwargs.username }} ({{ page_obj.paginator.count }}) </h1>
-                    {% for post in posts %}
+                    <h1 class="mb-3">Post by {{ u_id }} </h1>
+                    {% for post in posts%}
                     <article class="media content-section">
                     <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="">
                         <div class="media-body">
@@ -57,6 +56,34 @@
                 </div>
             </div>
         </div>
+    </div> <br>
+    <div class="info clearfix">
+        <p class="float-left"><i class="fas fa-info-circle"></i> On pressing this button, it will delete your account and posts forever. <br>
+            <strong> This action is irreversible!</strong>
+        </p>
+        <button type="button" class="deactivate float-right btn btn-danger btn-lg" data-toggle="modal"
+            data-target="#staticBackdrop">Deactivate Account</button>
+    </div>
+    <!-- Modal  -->
+    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel"><i class="fas fa-exclamation-circle"></i> Deactivate Account</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-dialog">
+                Are you sure you want to proceed?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger">Continue</button>
+              </div>
+            </div>
+          </div>
     </div>
 </div>
+
 {% endblock content %}

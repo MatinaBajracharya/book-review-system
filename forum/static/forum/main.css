@@ -258,6 +258,14 @@ button.createbtn:hover{
     left: 50px;
     top: 50px;
   }
+
+  .settings{
+    margin-left: -4rem;
+  }
+
+  .comment-form-wrap{
+    width: 75%;
+  }
 }
 
 @media(max-width: 900px){
@@ -296,6 +304,12 @@ button.createbtn:hover{
     padding: 20px;
     margin: 5px 0;
   }
+  .settings{
+    margin-left: 0rem;
+  }
+  .comment-form-wrap{
+    width: 45%;
+  }
 }
 
 @media(max-width: 480px){
@@ -305,6 +319,34 @@ button.createbtn:hover{
   .profile-header h3{
     font-size: 1.7rem;
   }
+  .settings{
+    margin-left: 10rem;
+  }
+
+  .comment-form-wrap{
+    width: 45%;
+  }
+}
+
+.user{
+  margin-top: -60px;
+  padding-left: 80px;
+}
+
+.reply{
+  margin-left: 80px;
+  border: none;
+  background: none;
+  color: blue;
+}
+
+.subcomment{
+  margin-top: -60px;
+  padding-left: 120px;
+}
+
+.settings{
+  margin-left: 45rem;
 }
 
 
