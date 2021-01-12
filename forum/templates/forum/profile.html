@@ -56,34 +56,37 @@
                 </div>
             </div>
         </div>
-    </div> <br>
-    <div class="info clearfix">
-        <p class="float-left"><i class="fas fa-info-circle"></i> On pressing this button, it will delete your account and posts forever. <br>
-            <strong> This action is irreversible!</strong>
-        </p>
-        <button type="button" class="deactivate float-right btn btn-danger btn-lg" data-toggle="modal"
-            data-target="#staticBackdrop">Deactivate Account</button>
     </div>
-    <!-- Modal  -->
-    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel"><i class="fas fa-exclamation-circle"></i> Deactivate Account</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-dialog">
-                Are you sure you want to proceed?
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger">Continue</button>
-              </div>
+    {% if request.user.id == u_id %}
+        <br>
+        <div class="info clearfix">
+            <p class="float-left"><i class="fas fa-info-circle"></i> On pressing this button, it will delete your account and posts forever. <br>
+                <strong> This action is irreversible!</strong>
+            </p>
+            <button type="button" class="deactivate float-right btn btn-danger btn-lg" data-toggle="modal"
+                data-target="#staticBackdrop">Deactivate Account</button>
+        </div>
+        <!-- Modal  -->
+        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel"><i class="fas fa-exclamation-circle"></i> Deactivate Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-dialog">
+                    Are you sure you want to proceed?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger">Continue</button>
+                </div>
+                </div>
             </div>
-          </div>
+        </div>
     </div>
-</div>
+    {% endif %}
 
 {% endblock content %}

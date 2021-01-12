@@ -19,6 +19,7 @@ from user import views as user_views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
+from book.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,6 +35,7 @@ urlpatterns = [
     path('', include('forum.urls')),
     path('summernote/', include('django_summernote.urls')),
     path('accounts/', include('allauth.urls')),
+    path('admin/upload-csv/', book_detail_upload, name="book_detail_upload"),
 ]
 
 if settings.DEBUG: 

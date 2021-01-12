@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
 
     'django_summernote',
+    'import_export',
 
     'forum.apps.ForumConfig',
     'user.apps.UserConfig',
+    'book.apps.BookConfig',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -148,7 +150,7 @@ MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL= '/about'
+LOGIN_REDIRECT_URL= '/browse'
 LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

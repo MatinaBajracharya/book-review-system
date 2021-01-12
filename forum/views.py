@@ -13,8 +13,8 @@ from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 def home(request):
     return render(request, 'forum/home.html', {'title': 'Home'})
 
-def about(request):
-    return render(request, 'forum/about.html', {'title': 'About'})
+def browse(request):
+    return render(request, 'forum/browse.html', {'title': 'Browse'})
 
 @login_required
 def forum(request):
