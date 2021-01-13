@@ -7,6 +7,7 @@ from .decorators import authenticated_user
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
+from django.db.models import Q
 
 # Create your views here.
 
@@ -18,9 +19,15 @@ def browse(request):
 
 @login_required
 def forum(request):
+    query = request.GET.get('q')
+
+    if query:
+        results = Post.objects.filter(Q(title__icontains=query) | Q(content__icontains=query) | Q(author__username__icontains=query))
+    else:
+        results = Post.objects.all()
+        
     context = {
-        'posts': Post.objects.all(),
-        'comment': Comment.object.all().count(),
+        'posts': results,
         'title': 'Forum'
     }
     return render(request, 'forum/forum.html', context)
@@ -51,6 +58,19 @@ class PostListView(ListView):
     template_name = 'forum/forum.html'
     context_object_name = 'posts'
     paginate_by = 5
+
+# class PostSearchView(ListView):
+#     model = Post
+#     template_name = 'forum/forum.html'
+#     def get_queryset(request):
+#         query = request.GET.get('q')
+#         if query:
+#             results = Post.objects.filter(Q(title__icontains=query) | Q(content__icontains=query) | Q(author__username__icontains=query))                
+#         else:
+#             results = Post.objects.all()
+
+#         return results
+
 
 class UserPostListView(ListView):
     model = Post
@@ -156,4 +176,3 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
-    

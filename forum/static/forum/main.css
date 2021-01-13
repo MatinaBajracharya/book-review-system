@@ -164,6 +164,7 @@ a.article-title:hover {
   background: #fff;
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
   padding: 90px 30px 20px;
+  height: 230px;
 }
 
 .profile-side p{
@@ -354,16 +355,23 @@ button.createbtn:hover{
   position: absolute;
   top: 30%;
   width: 500px;
-  left: 35%;
+  left: 38%;
+  display: flex;
 }
 
 .input, .search{
   border: 3px solid #343a40;
   height: 40px;
-  width: 30px;
+  width: 150%;
   border-radius: 50px;
   padding: 0px 10px;
   font-size: 18px;
+}
+
+.search{
+  margin-top: -17%;
+  left: 127%;
+  height: 36px ;
 }
 
 

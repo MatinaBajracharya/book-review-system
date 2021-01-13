@@ -25,12 +25,14 @@
                 </button>
             </div>
         </div>
-    
         <div class="right-side">
             <div class="nav">
                 <ul>
                     <li onclick="tabs(0)" class="user-post">Posts</li>
-                    <li onclick="tabs(1)" class="user-post"> Settings</li>
+                    
+                    {% if request.user.id == u_id.id %}
+                        <li onclick="tabs(1)" class="user-post"> Settings</li>
+                    {% endif %}
                 </ul>
             </div>
             <div class="profile-body">
@@ -41,7 +43,7 @@
                     <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="">
                         <div class="media-body">
                         <div class="article-metadata">
-                            <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+                            <a class="mr-2" href="{% url 'profile' post.author.id %}">{{ post.author }}</a>
                             <small class="text-muted">{{ post.date_posted|date:"F d, Y"}}</small>
                         </div>
                         <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
@@ -50,14 +52,17 @@
                     </article>
                     {% endfor %}
                 </div>
+                
+                {% if request.user.id == u_id.id %}
                 <div class="profile-setting tab">
                     <h1>Account Settings</h1>
-
+                        {% include "user/edit-profile.html" %}
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
-    {% if request.user.id == u_id %}
+    {% if request.user.id == u_id.id %}
         <br>
         <div class="info clearfix">
             <p class="float-left"><i class="fas fa-info-circle"></i> On pressing this button, it will delete your account and posts forever. <br>

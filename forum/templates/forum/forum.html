@@ -27,18 +27,21 @@
             <strong>{{ comment }} Comments</strong>
           </div>
       </article>
+      {% empty %}
+      <div class="container">
+        <h3 class="text-center">No posts found!</h3>
+      </div>
       {% endfor %}
     </div>
     <div class="col-4">
       <div class="card border-dark mb-3" style="max-width: 25rem;">
         <div class="card-header">Search</div>
         <div class="card-body text-dark">
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search for a post.." aria-label="Search">
+          <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'search' %}">
+            <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search for a post.." aria-label="Search" value="{{request.GET.q}}">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
           </form>
         </div>
-      </div>
     </div>
   </div>
     {% if is_paginated %}

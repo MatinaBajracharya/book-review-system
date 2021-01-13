@@ -66,7 +66,7 @@
                 <h1 class="display-2">Books</h1>
                 <h3>Hello there! Nice to see you.</h3>
                 {% if user.is_authenticated %}
-                <a href="{% url 'forum-about' %}"><button class="bt btn-secondary btn-lg">Browse Books!</button></a>
+                <a href="{% url 'browse' %}"><button class="bt btn-secondary btn-lg">Browse Books!</button></a>
                 {% else %}
                 <a href="{% url 'login' %}"><button class="bt btn-secondary btn-lg">Login</button></a>
                 <a href="{% url 'register' %}"><button class="bt btn-primary btn-lg">Register</button></a>
@@ -79,7 +79,7 @@
                 <h1 class="display-2">Books</h1>
                 <h3>Hello there! Nice to see you.</h3>
                 {% if user.is_authenticated %}
-                <a href="{% url 'forum-about' %}"><button class="bt btn-secondary btn-lg">Browse Books!</button></a>
+                <a href="{% url 'browse' %}"><button class="bt btn-secondary btn-lg">Browse Books!</button></a>
                 {% else %}
                 <a href="{% url 'login' %}"><button class="bt btn-secondary btn-lg">Login</button></a>
                 <a href="{% url 'register' %}"><button class="bt btn-primary btn-lg">Register</button></a>
@@ -92,7 +92,7 @@
                 <h1 class="display-2">Books</h1>
                 <h3>Hello there! Nice to see you.</h3>
                 {% if user.is_authenticated %}
-                <a href="{% url 'forum-about' %}"><button class="bt btn-secondary btn-lg">Browse Books!</button></a>
+                <a href="{% url 'browse' %}"><button class="bt btn-secondary btn-lg">Browse Books!</button></a>
                 {% else %}
                 <a href="{% url 'login' %}"><button class="bt btn-secondary btn-lg">Login</button></a>
                 <a href="{% url 'register' %}"><button class="bt btn-primary btn-lg">Register</button></a>
