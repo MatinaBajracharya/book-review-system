@@ -35,6 +35,7 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
     path('accounts/', include('allauth.urls')),
     path('admin/upload-csv/', book_detail_upload, name="book_detail_upload"),
+    path('', include('book.urls')),
 ]
 
 if settings.DEBUG: 

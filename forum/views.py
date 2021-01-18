@@ -14,9 +14,6 @@ from django.db.models import Q
 def home(request):
     return render(request, 'forum/home.html', {'title': 'Home'})
 
-def browse(request):
-    return render(request, 'forum/browse.html', {'title': 'Browse'})
-
 @login_required
 def forum(request):
     query = request.GET.get('q')

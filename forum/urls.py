@@ -6,7 +6,6 @@ from .views import like_post, PostListView, PostCreateView, PostUpdateView, Post
 urlpatterns = [
     path('', views.home, name='home'),
     path('like/', like_post, name='likes'),
-    path('browse/', views.browse, name='browse'),
     path('forum/', PostListView.as_view(), name='forum'),
     path('post/<int:pk>/', views.details, name='post-detail'),
     path('post/new/', PostCreateView.as_view(), name='post-create'),

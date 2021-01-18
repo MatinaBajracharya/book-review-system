@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from .models import BookDetail
+from django.views.generic import ListView, DetailView
 
 # Create your views here.
 @permission_required('admin.can_add_log_entry')
@@ -35,3 +36,13 @@ def book_detail_upload(request):
 
     context = {}
     return render(request, template, context)
+
+class BookListView(ListView):
+    model = BookDetail
+    template = "/browse.html"
+    context_object_name = 'books'
+    paginate_by = 10
+
+    # data = BookDetail.objects.all()
+    
+    # return render(request, template, {'books':data})
