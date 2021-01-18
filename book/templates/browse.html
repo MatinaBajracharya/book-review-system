@@ -1,11 +1,18 @@
 {% extends "forum/base.html" %}
 {% block content %}
+
+  <p class="text-center title">Books</p>
   {% include "forum/search.html" %}
 
-  {% for book in books %}
-   <p>{{ book.ISBN }}</p>
-  {% empty %}
+  <div class="container book">
+    {% for book in books %}
+    <a href="{% url 'book-detail' book.id %}"><img src="{{ book.Image_URL_L }}" alt="img" id="img"></a>
+    {% empty %}
     <p>NO data</p>
-  {% endfor %}
-  {% include "forum/pagination.html" %}
+    {% endfor %}
+  </div>
+
+  <div class="row" style="margin-left: -140px;">
+    {% include "forum/pagination.html" %}
+  </div>
 {% endblock content%}

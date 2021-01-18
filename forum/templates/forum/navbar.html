@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand mr-4" href="{% url 'home' %}"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2018%2F04%2FEOS_logo_coin.png&f=1&nofb=1" width="30" height="30" class="d-inline-block align-top" alt=""> Books</a>
+        <a class="navbar-brand mr-4" href="{% url 'home' %}"><img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2018%2F04%2FEOS_logo_coin.png&f=1&nofb=1" width="30" height="30" class="d-inline-block align-top" alt=""><p style="font-family: Cinzel Decorative; display: inline;"> Books</p></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
             aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -10,7 +10,7 @@
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
                 {% if user.is_authenticated %}
-                {% if request.path == forum %}
+                <!-- {% if request.path == forum %}
                 <div class="input-group flex-nowrap box">
                   <div class="input-group">
                     <form action="" method="">
@@ -21,7 +21,7 @@
                   </form>
                   </div>
                 </div>
-                {% endif %}
+                {% endif %} -->
                 <a class="nav-item nav-link {% if request.path == browse %} active {% endif %}" href="{% url 'browse' %}">Browse</a>
                 <a class="nav-item nav-link {% if request.path == forum %} active {% endif %}" href="{% url 'forum' %}">Discussion Forum</a>
                 <li class="nav-item dropdown">

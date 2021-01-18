@@ -1,5 +1,5 @@
 import csv, io, os
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from .models import BookDetail
@@ -41,8 +41,36 @@ class BookListView(ListView):
     model = BookDetail
     template = "/browse.html"
     context_object_name = 'books'
-    paginate_by = 10
-
-    # data = BookDetail.objects.all()
+    paginate_by = 12
     
-    # return render(request, template, {'books':data})
+
+def detail(request, pk):
+    template = "book/book_detail.html"  
+    try:
+        book = get_object_or_404(BookDetail, pk=pk)
+        # details = Post.objects.get(pk=pk)
+        # comments = Comment.objects.filter(post=post).order_by('-id')
+    except BookDetail.DoesNotExist:
+        raise Http404("Book does not exist.")
+
+        # if request.method == 'POST':
+        #     comment = request.POST.get('comm') 
+        #     comm_id = request.POST.get('comm_id')
+
+        #     if comm_id:
+        #         SubComment(post=post,
+        #             user = request.user,
+        #             comment = comment,
+        #             comment_reply = Comment.objects.get(id=int(comm_id))
+        #         ).save()
+        #     else:
+        #         Comment(post=post, user = request.user, comment=comment).save()
+
+        # comments = []
+        # for c in Comment.objects.filter(post=post):
+        #     comments.append([c, SubComment.objects.filter(comment_reply = c)])
+
+        context = {
+            'book' : book,
+        }
+        return render(request, template, context)
