@@ -1,9 +1,11 @@
 import csv, io, os
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from .models import BookDetail
+from .models import BookDetail, Review
 from django.views.generic import ListView, DetailView
+from .forms import ReviewForm
+from django.db.models import Avg
 
 # Create your views here.
 @permission_required('admin.can_add_log_entry')
@@ -45,32 +47,42 @@ class BookListView(ListView):
     
 
 def detail(request, pk):
-    template = "book/book_detail.html"  
+    template = "book_detail.html"
+    form = ReviewForm(request.POST)
+    
     try:
         book = get_object_or_404(BookDetail, pk=pk)
-        # details = Post.objects.get(pk=pk)
-        # comments = Comment.objects.filter(post=post).order_by('-id')
+        obj = Review.objects.filter(ISBN = pk)
+        avg_rating = obj.aggregate(Avg('rating')).get('rating__avg')
+
     except BookDetail.DoesNotExist:
         raise Http404("Book does not exist.")
 
-        # if request.method == 'POST':
-        #     comment = request.POST.get('comm') 
-        #     comm_id = request.POST.get('comm_id')
+    except Review.DoesNotExist:
+        obj = None
 
-        #     if comm_id:
-        #         SubComment(post=post,
-        #             user = request.user,
-        #             comment = comment,
-        #             comment_reply = Comment.objects.get(id=int(comm_id))
-        #         ).save()
-        #     else:
-        #         Comment(post=post, user = request.user, comment=comment).save()
+    if form.is_valid():
+        data = Review()
+        data.ISBN = BookDetail.objects.get(pk=pk)
+        data.review = form.cleaned_data['comment']
+        data.rating = form.cleaned_data['rate']
+        current_user= request.user
+        data.user_id=current_user.id
+        print(data.user_id)
+        print(data.review)
+        print(data.rating)
+        print("****************************************************************************************")
+        data.save()
+        messages.success(request, "Your review has ben sent. Thank you for your interest.")
+        return redirect('book-detail', pk=pk)
 
-        # comments = []
-        # for c in Comment.objects.filter(post=post):
-        #     comments.append([c, SubComment.objects.filter(comment_reply = c)])
+    context = {
+        'book' : book,
+        'obj': obj,
+        'form': form,
+        'avg_rating': avg_rating,
+    }
+    return render(request, template, context)
 
-        context = {
-            'book' : book,
-        }
-        return render(request, template, context)
+
+

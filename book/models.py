@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from django.contrib.auth.models import User
 
 # Create your models here.
 class BookDetail(models.Model):
@@ -13,3 +15,13 @@ class BookDetail(models.Model):
 
     def __str__(self):
         return f'{self.Book_Title}'
+
+class Review(models.Model):
+    ISBN = models.ForeignKey(BookDetail, on_delete=models.CASCADE)
+    rating = models.IntegerField(default = 1)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    review = models.CharField(max_length=100)
+    date_posted = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f'{self.rating}-{self.user}'

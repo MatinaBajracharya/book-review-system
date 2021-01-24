@@ -1,5 +1,104 @@
 {% extends "forum/base.html" %}
 
 {% block content %}
-    {{ book.ISBN }}
+<div class="container book-detail">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'browse' %}">Browse</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{ book.Book_Title }}</li>
+        </ol>
+    </nav>
+    <div class="row">
+        <div class="col-4">
+            <img src="{{ book.Image_URL_L }}" alt="" style="height: 100%; width: 70%; box-shadow: 10px 10px 5px rgb(37, 32, 32);">
+        </div>
+        <div class="col-6">
+            <p class="heading">{{ book.Book_Title }}</p>
+                <i class="fa fa-star {% if avg_rating < 1 %} empty {% endif %} fa-2x"></i>
+                <i class="fa fa-star {% if avg_rating < 2 %} empty {% if avg_rating > 1.3 %} half {% endif %}{% endif %} fa-2x"></i>
+                <i class="fa fa-star {% if avg_rating < 3 %} empty {% if avg_rating > 2.2 %} half {% endif %}{% endif %} fa-2x"></i>
+                <i class="fa fa-star {% if avg_rating < 4 %} empty {% if avg_rating > 3.3 %} half {% endif %}{% endif %} fa-2x"></i>
+                <i class="fa fa-star {% if avg_rating < 5 %} empty {% if avg_rating > 4.3 %} half {% endif %}{% endif %} fa-2x"></i>
+                <!-- <div class="half"><i class="fa fa-star fa-2x"></i></div> -->
+            <br> <br>
+            <div id="confirm-box"></div>
+            <div class="row detail">
+                <div class="col-6">
+                    <p class="key">ISBN:  {{ book.ISBN }}</p>
+                    <p class="key">Author:  {{ book.Book_Author }}</p>
+                    <p class="key">Rating: {% if avg_rating == null %}0{% else %}{{ avg_rating }}{% endif %}</p>
+                </div>
+                <div class="col-6">
+                    <p class="key">Year of Publication:  {{ book.Year_Of_Publication }}</p>
+                    <p class="key">Publisher: {{ book.Publisher }}</p>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div> 
+<br> 
+<hr>  
+<div class="row">
+    <div class="col-md-6">
+        <h4 class="review-title">Reviews</h4>
+        {% for review in obj %}
+            <div class="product-reviews">
+                <div class="single-review">
+                    <div class="review-heading">
+                        <div><a href="#"><i class="fa fa-user"></i> {{ review.user.first_name }}</a> </div>
+                        <div><a href="#"><i class="fa fa-clock"></i> {{ review.date_posted }}</a></div>
+
+                        <div class="review-rating pull-right">
+                            <i class="fa fa-star {% if review.rating < 1 %} empty {% endif %}"></i>
+                            <i class="fa fa-star {% if review.rating < 2 %} empty {% endif %}"></i>
+                            <i class="fa fa-star {% if review.rating < 3 %} empty {% endif %}"></i>
+                            <i class="fa fa-star {% if review.rating < 4 %} empty {% endif %}"></i>
+                            <i class="fa fa-star {% if review.rating < 5 %} empty {% endif %}"></i>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p>{{ review.review }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="review-title text-center mt-5">No reviews yet!</p>
+        {% endfor %}
+    </div>
+    <div class="col-md-6">
+        <h4 class="review-title">Write Your Review</h4>
+        <p class="text-muted small">Your email address will not be published.</p>
+        <form class="review-form" action="{% url 'book-detail' book.id%}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea name="comment" class="form-group" placeholder="Your review here.."></textarea><br>
+                {% if form.errors %}
+                    {% for err in form.comment.errors %}
+                            <small class="text-danger">{{ err }}</small>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <div class="input-rating">
+                    <strong class="text-uppercase">Your Rating: </strong><br>
+                    <div class="stars">
+                        <input type="radio" id="star5" name="rate" value="5" /><label for="star5"></label>
+                        <input type="radio" id="star4" name="rate" value="4" /><label for="star4"></label>
+                        <input type="radio" id="star3" name="rate" value="3" /><label for="star3"></label>
+                        <input type="radio" id="star2" name="rate" value="2" /><label for="star2"></label>
+                        <input type="radio" id="star1" name="rate" value="1" /><label for="star1"></label>
+                    </div>
+                </div>
+                {% for err in form.comment.errors %}
+                    <small class="text-danger">{{ err }}</small>
+                {% endfor %}
+            </div>
+            {% if user.id is not None %}
+                <button class="btn btn-dark">Submit</button>
+            {% else %}
+                You must be logged in to post a review.
+            {% endif %}
+        </form>
+    </div>
+</div>
 {% endblock %}

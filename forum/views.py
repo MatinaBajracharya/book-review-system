@@ -141,12 +141,9 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'content']
 
-    widgets ={
-        'content':SummernoteInplaceWidget(),
-        }
-
     def form_valid(self,form):
         form.instance.author = self.request.user
+        form.fields['content'].widget = SummernoteInplaceWidget()
         return super().form_valid(form)
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

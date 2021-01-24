@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@500&display=swap');
 
 *{
   box-sizing: border-box;
@@ -361,7 +362,6 @@ button.createbtn:hover{
 
 .box{
   position: absolute;
-  /* top: 30%; */
   width: 500px;
   left: 35%;
   display: flex;
@@ -398,12 +398,156 @@ button.createbtn:hover{
   border-radius: 5px;
   margin: 10px;
   margin-bottom: 10px !important;
-  border:1px solid rgb(7, 7, 7);
+  border:1px solid rgb(15, 14, 14);
+  box-shadow: 10px 10px 5px rgb(37, 32, 32);
 }
 
 #img:hover {
   transform: scale(1.1);
 }
+
+/***********Book Detail**************/
+
+textarea{
+  width: 100%;
+  border-radius: 5px;
+}
+
+.heading{
+  font-family: 'El Messiri', sans-serif;
+  font-size: 50px;
+}
+
+.key{
+  color: #343a40;
+}
+
+/* .detail{
+  margin-top: 5%;
+} */
+
+.checked{
+  color: orange;
+}
+
+.my-btn{
+  background-color: inherit !important;
+  border: 0 !important;
+}
+
+.single-review {
+  margin-bottom: 30px;
+}
+
+.single-review .review-heading>div {
+  display: inline-block;
+}
+
+.single-review .review-heading>div+div {
+  margin-left: 10px;
+}
+
+.single-review .review-rating {
+  display: inline-block;
+}
+
+.fa-star {
+  color: #FFB656;
+}
+
+.fa-star.empty {
+  color: #DADADA;
+}
+
+/* .half i{
+  background:-moz-linear-gradient(
+    right,
+  #FFB656 0%,
+  #FFB656 50%,
+  #DADADA 50%,
+  #DADADA 100%
+  ); 
+  background: -webkit-linear-gradient(
+    right,  
+  #FFB656 0%,
+  #FFB656 50%,
+  #DADADA 50%,
+  #DADADA 100%
+  ); 
+  background: linear-gradient(
+    to right, 
+    #FFB656 0%, 
+    #FFB656 50%, 
+    #DADADA 50%, 
+    #DADADA 100%
+  );
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: #DADADA;
+} */
+
+.single-review .review-body {
+  margin-top: 10px;
+}
+
+/****form***/
+.review-form textarea.input {
+  height: 90px;
+}
+
+.review-form .input-rating .stars {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.review-form .input-rating .stars input[type="radio"] {
+  display: none;
+}
+
+.review-form .input-rating .stars>label {
+  float: right;
+  cursor: pointer;
+  padding: 2px 3px;
+  margin: 0px;
+  -webkit-transition: 0.3s all;
+  transition: 0.3s all;
+}
+
+.review-form .input-rating .stars>label:hover, .review-form .input-rating .stars>label:hover~label {
+  -webkit-transform: scale(1.5);
+  -ms-transform: scale(1.5);
+  transform: scale(1.5);
+}
+
+.review-form .input-rating .stars>label:before {
+  content: "\f006";
+  font-family: FontAwesome;
+  font-style: normal;
+  font-weight: normal;
+  color: #DADADA;
+  font-size: 16px;
+  -webkit-transition: 0.3s all;
+  transition: 0.3s all;
+}
+
+.review-form .input-rating .stars>label:hover:before, .review-form .input-rating .stars>label:hover~label:before {
+  content: "\f005";
+  color: #FFB656;
+}
+
+.review-form .input-rating .stars>input:checked label:before, .review-form .input-rating .stars>input:checked~label:before {
+  content: "\f005";
+  color: #FFB656;
+}
+
+.review-title{
+  font-family: 'El Messiri', sans-serif;
+}
+
+
+
+
 
 
 
