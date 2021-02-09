@@ -1,4 +1,4 @@
-import csv, io, os
+import csv, io, os, math
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
@@ -6,6 +6,8 @@ from .models import BookDetail, Review
 from django.views.generic import ListView, DetailView
 from .forms import ReviewForm
 from django.db.models import Avg
+from django.db.models import Q
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 # Create your views here.
 @permission_required('admin.can_add_log_entry')
@@ -49,17 +51,26 @@ class BookListView(ListView):
 def detail(request, pk):
     template = "book_detail.html"
     form = ReviewForm(request.POST)
-    
+  
     try:
         book = get_object_or_404(BookDetail, pk=pk)
-        obj = Review.objects.filter(ISBN = pk)
-        avg_rating = obj.aggregate(Avg('rating')).get('rating__avg')
+        obj = Review.objects.filter(ISBN = pk).order_by('-date_posted')
+        num = obj.aggregate(Avg('rating')).get('rating__avg')
+        avg_rating = math.floor(num*10)/10
+
+        paginator = Paginator(obj, 3)  # 3 posts in each page
+        page = request.GET.get('page')
+        page_obj = paginator.page(page)
 
     except BookDetail.DoesNotExist:
         raise Http404("Book does not exist.")
 
     except Review.DoesNotExist:
         obj = None
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
 
     if form.is_valid():
         data = Review()
@@ -68,10 +79,6 @@ def detail(request, pk):
         data.rating = form.cleaned_data['rate']
         current_user= request.user
         data.user_id=current_user.id
-        print(data.user_id)
-        print(data.review)
-        print(data.rating)
-        print("****************************************************************************************")
         data.save()
         messages.success(request, "Your review has ben sent. Thank you for your interest.")
         return redirect('book-detail', pk=pk)
@@ -81,6 +88,22 @@ def detail(request, pk):
         'obj': obj,
         'form': form,
         'avg_rating': avg_rating,
+        # 'page': page,
+        'page_obj': page_obj,
+    }
+    return render(request, template, context)
+
+def searchbook(request):
+    template = 'search_result.html'
+    query = request.GET.get('q')
+
+    if query:
+        results = BookDetail.objects.filter(Q(Book_Title__icontains=query) | Q(Book_Author__icontains=query))
+    else:
+        results = BookDetail.objects.all()
+        
+    context = {
+        'book': results,
     }
     return render(request, template, context)
 

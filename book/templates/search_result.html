@@ -1,0 +1,38 @@
+{% extends "forum/base.html" %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'browse' %}">Browse</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Search Results</li>
+  </ol>
+</nav> <br>
+<!-- <p class="text-center title">Books</p> -->
+{% include "forum/search.html" %} <br>
+{% for item in book %}
+  <div class="card mb-3 mt-5 border-primary" style="max-width: 100%;">
+    <div class="row no-gutters">
+      <div class="col-md-2">
+        <img src="{{ item.Image_URL_L }}" class="card-img" style="height: 300px; width: 200px;" alt="No preview">
+      </div>
+      <div class="col-md-10">
+        <div class="card-body p-5">
+          <a href="{% url 'book-detail' item.id %}"><h5 class="card-title" style="font-family: Cinzel Decorative; font-weight: bold; font-size: 25px;">{{ item.Book_Title }}</h5> <br></a>
+          <div class="row key" style="font-family: 'Times New Roman', Times, serif" >
+            <div class="col-6">
+              <p class="card-text">ISBN: {{ item.ISBN }}</p>
+              <p class="card-text">Author: {{ item.Book_Author }}</p>
+            </div>
+            <div class="col-6">
+              <p class="card-text">Publisher: {{ item.Publisher }}</p>
+              <p class="card-text">Year of Publication: {{ item.Year_Of_Publication }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% empty %} 
+  <p>No books to show.</p>
+{% endfor %}
+{% endblock %}

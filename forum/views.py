@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 # Create your views here.
 
@@ -25,7 +26,7 @@ def forum(request):
         
     context = {
         'posts': results,
-        'title': 'Forum'
+        'title': 'Forum',
     }
     return render(request, 'forum/forum.html', context)
 
