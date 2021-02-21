@@ -1,9 +1,8 @@
-{% extends "forum/base.html"%}
+
 {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
-{% block content %}
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,36 +20,7 @@
 
 <body>
 	<!-- Navigation -->
-	<nav class="navbar bg-dark navbar-expand-md navbar-dark sticky-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Flogos-download.com%2Fwp-content%2Fuploads%2F2018%2F04%2FEOS_logo_coin.png&f=1&nofb=1" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
-                Books
-            </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#carouselExampleIndicators">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#share-section">Share</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#services">Services</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#testimony">Testimonies</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#connect">Connect</a>
-            </li>
-          </ul>
-        </div>
-        </div>
-    </nav>
+    {% include "forum/navbar.html" %}
 
 	<!--- Image Slider -->    
     <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -250,6 +220,4 @@
             var scroll = new SmoothScroll('a[href*="#"]');
         </script>
 </body>
-{% endblock %}
-
 </html>

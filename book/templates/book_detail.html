@@ -65,18 +65,13 @@
             {% endfor %}
             {% include "forum/pagination.html" %}
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mb-4">
         <h4 class="review-title">Write Your Review</h4>
         <p class="text-muted small">Your email address will not be published.</p>
         <form class="review-form" action="{% url 'book-detail' book.id%}" method="post">
             {% csrf_token %}
-            <div class="form-group">
-                <textarea name="comment" class="form-group" placeholder="Your review here.."></textarea><br>
-                {% if form.errors %}
-                    {% for err in form.comment.errors %}
-                            <small class="text-danger">{{ err }}</small>
-                    {% endfor %}
-                {% endif %}
+            <div class="form-group mb-0">
+                <textarea name="comment" class="form-group" placeholder="Your review here.." required></textarea><br>
             </div>
             <div class="form-group">
                 <div class="input-rating">

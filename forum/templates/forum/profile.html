@@ -1,5 +1,4 @@
 {% extends "forum/base.html"%}
-{% load static %}
 {% block content %}
 <div class="container profile">
     <div class="profile-header">
@@ -20,9 +19,9 @@
                 <p class="bio">{{ u_id.profile.bio }}</p>
             </div>
             <div class="profile-btn">
-                <button class="createbtn">
+                <a href="{% url 'post-create' %}"><button class="createbtn">
                     <i class="fa fa-plus"></i>Create
-                </button>
+                </button></a>
             </div>
         </div>
         <div class="right-side">
@@ -37,7 +36,9 @@
             </div>
             <div class="profile-body">
                 <div class="profile-posts tab">
-                    <h1 class="mb-3">Post by {{ u_id }} </h1>
+                    <legend class="border-bottom mb-4">
+                        Posts by {{ u_id }}
+                    </legend>
                     {% for post in posts%}
                     <article class="media content-section">
                     <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="">
@@ -55,7 +56,6 @@
                 
                 {% if request.user.id == u_id.id %}
                 <div class="profile-setting tab">
-                    <h1>Account Settings</h1>
                         {% include "user/edit-profile.html" %}
                 </div>
                 {% endif %}
@@ -86,12 +86,16 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-danger">Continue</button>
+                    <form method="POST" action="{% url 'delete_user' request.user.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Continue</button>
+                    </form>
                 </div>
                 </div>
             </div>
         </div>
-    </div>
+        
     {% endif %}
+</div>
 
 {% endblock content %}

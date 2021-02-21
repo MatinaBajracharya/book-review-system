@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from forum.models import Post
@@ -19,26 +20,22 @@ def register(request):
         form = UserRegisterForm()
     return render(request, 'user/register.html', {'form': form})
 
-# def EditProfile(request):
-#     if request.method == 'POST':
-#         u_form = UserUpdateForm(request.POST, instance = request.user)
-#         p_form = ProfileUpdateForm(request.POST, request.FILES, instance= request.user.profile)
+def DeleteProfile(request, pk):
+    u_id = request.user.id
+    profile_uid = User.objects.get(pk = pk)
+    p_id = profile_uid.id
+    print(p_id)
+    print(u_id)
+    if request.method == 'POST':
+        if p_id == u_id:
+            profile_uid.delete()
+            logout(request)
+            messages.success(request, f'User has been deleted')
+            return redirect('register')
+    else:
+        messages.error(request, f'You are not authorized to delete users!')
+        return redirect('browse')
 
-#         if u_form.is_valid() and p_form.is_valid():
-#             u_form.save()
-#             p_form.save()
-#             messages.success(request, f'Your profile has been updated.')
-#             return redirect('profile', pk = request.user.id)
-#     else:
-#         u_form = UserUpdateForm(instance = request.user)
-#         p_form = ProfileUpdateForm(instance= request.user.profile)
-    
-#     context={
-#         'u_form': u_form,
-#         'p_form': p_form
-#     }
-#     return render(request, 'forum/profile.html', context)
-    # return render(request, 'user/edit-profile.html', context)
 
 @login_required
 def profile(request, pk):

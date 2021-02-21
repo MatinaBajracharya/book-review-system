@@ -17,6 +17,9 @@
 
     <!-- Rating -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+      <!-- CSS -->
+      <link href="{% static 'forum/style.css' %}" rel="stylesheet">
 
     <style>
       .info p {
@@ -74,5 +77,11 @@
         <script src="{% static 'forum/js/nav.js' %}"></script>
         <!-- Rating JS -->
         <script src="{% static 'forum/js/rating.js' %}"></script>
+           <!-- Scripts -->
+           <script src="{% static 'forum/js/smooth-scroll.js' %}"></script>
+           <script src="{% static 'forum/js/main.js' %}"></script>
+           <script>
+               var scroll = new SmoothScroll('a[href*="#"]');
+           </script>
     </body>
 </html>

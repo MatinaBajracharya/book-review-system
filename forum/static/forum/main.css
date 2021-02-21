@@ -163,7 +163,7 @@ a.article-title:hover {
 }
 
 .profile-side{
-  width: 300px;
+  width: 400px;
   background: #fff;
   box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
   padding: 90px 30px 20px;
@@ -188,6 +188,22 @@ button.createbtn{
   width: 100%;
   border-radius: 3px;
   background: palevioletred;
+  font-size: 1rem;
+  margin: 5px 2px;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 10px;
+  transition: all .3s ease-in-out;
+  box-shadow: 0px 5px 7px 0px rgba(0, 0, 0, 0.3);
+  color: fff;
+}
+
+button.changebtn{
+  border: 0;
+  padding: 10px;
+  width: 100%;
+  border-radius: 3px;
+  background: rgb(136, 82, 100);
   font-size: 1rem;
   margin: 5px 2px;
   cursor: pointer;
@@ -241,7 +257,7 @@ button.createbtn:hover{
 
 .tab{
   padding: 20px;
-  width: 100%;
+  width: 600px;
   display: none;
 }
 

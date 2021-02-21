@@ -56,21 +56,23 @@ def detail(request, pk):
         book = get_object_or_404(BookDetail, pk=pk)
         obj = Review.objects.filter(ISBN = pk).order_by('-date_posted')
         num = obj.aggregate(Avg('rating')).get('rating__avg')
-        avg_rating = math.floor(num*10)/10
-
         paginator = Paginator(obj, 3)  # 3 posts in each page
         page = request.GET.get('page')
         page_obj = paginator.page(page)
 
     except BookDetail.DoesNotExist:
         raise Http404("Book does not exist.")
-
     except Review.DoesNotExist:
         obj = None
     except PageNotAnInteger:
         page_obj = paginator.page(1)
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
+
+    if obj == None:
+        avg_rating = 0
+    else:
+        avg_rating = math.floor(num*10)/10
 
     if form.is_valid():
         data = Review()

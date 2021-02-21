@@ -24,6 +24,8 @@ from book.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', user_views.register, name='register'),
+    path('password_change/', auth_views.PasswordChangeView.as_view(template_name='user/changepassword.html'), name='password_change'),
+    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='user/passwordchanged.html'), name='password_change_done'),
     path('profile/<int:pk>', user_views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='user/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='user/logout.html'), name='logout'),
@@ -35,7 +37,9 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
     path('accounts/', include('allauth.urls')),
     path('admin/upload-csv/', book_detail_upload, name="book_detail_upload"),
+    # path('account/', include('django.contrib.auth.urls')),
     path('', include('book.urls')),
+    path('delete-user/<int:pk>', user_views.DeleteProfile, name='delete_user'),
 ]
 
 if settings.DEBUG: 

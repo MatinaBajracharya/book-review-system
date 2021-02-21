@@ -10,7 +10,7 @@ html, body{
 
 /*Carousel*/
 .carousel-inner img{
-  height: 95vh;
+  height: 100vh;
 }
 
 .carousel-caption{
