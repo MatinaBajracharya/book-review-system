@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 from django.db.models import Q
 from django.core.paginator import Paginator
+from .forms import PostForm
 
 # Create your views here.
 
@@ -139,21 +140,23 @@ def details(request, pk):
     return render(request, template, context)
 
 class PostCreateView(LoginRequiredMixin, CreateView):
-    model = Post
-    fields = ['title', 'content']
-
+    template_name = 'forum/post_form.html'
+    form_class = PostForm
+    queryset = Post.objects.all()
+    
     def form_valid(self,form):
         form.instance.author = self.request.user
-        form.fields['content'].widget = SummernoteInplaceWidget()
         return super().form_valid(form)
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Post
-    fields = ['title', 'content']
-
-    def form_valid(self, form):
+    template_name = 'forum/post_form.html'
+    form_class = PostForm
+    queryset = Post.objects.all()
+    
+    def form_valid(self,form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
 
     def test_func(self):
         post = self.get_object()
