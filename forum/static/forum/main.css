@@ -373,7 +373,7 @@ button.createbtn:hover{
 .title{
   font-family: Cinzel Decorative;
   font-size: 60px;
-  margin-top: 15%;
+  margin-top: 8%;
 }
 
 .box{
@@ -386,15 +386,15 @@ button.createbtn:hover{
 .input, .search{
   border: 1px solid #343a40;
   height: 40px;
-  width: 250%;
+  width: 200%;
   border-radius: 50px;
   padding: 0px 10px;
   font-size: 18px;
 }
 
 .search{
-  margin-top: -18%;
-  left: 227%;
+  margin-top: -16%;
+  left: 180%;
   height: 39px;
 }
 
@@ -562,7 +562,6 @@ textarea{
 .review-title{
   font-family: 'El Messiri', sans-serif;
 }
-
 
 
 

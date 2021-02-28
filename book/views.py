@@ -49,17 +49,15 @@ class BookListView(ListView):
     
 
 def detail(request, pk):
-    template = "book_detail.html"
-    form = ReviewForm(request.POST)
-  
     try:
+        template = "book_detail.html"
+        form = ReviewForm(request.POST)
         book = get_object_or_404(BookDetail, pk=pk)
         obj = Review.objects.filter(ISBN = pk).order_by('-date_posted')
-        num = obj.aggregate(Avg('rating')).get('rating__avg')
-        paginator = Paginator(obj, 3)  # 3 posts in each page
+        rate_avg = obj.aggregate(Avg('rating')).get('rating__avg')
+        paginator = Paginator(obj, 4)  # 3 posts in each page
         page = request.GET.get('page')
         page_obj = paginator.page(page)
-
     except BookDetail.DoesNotExist:
         raise Http404("Book does not exist.")
     except Review.DoesNotExist:
@@ -68,12 +66,15 @@ def detail(request, pk):
         page_obj = paginator.page(1)
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
+    except:
+        raise Http404("Something went wrong.")
 
-    if obj == None:
+    try:
+        avg_rating = math.floor(rate_avg*10)/10
+    except:
         avg_rating = 0
-    else:
-        avg_rating = math.floor(num*10)/10
 
+    print(page_obj)
     if form.is_valid():
         data = Review()
         data.ISBN = BookDetail.objects.get(pk=pk)
@@ -87,10 +88,9 @@ def detail(request, pk):
 
     context = {
         'book' : book,
-        'obj': obj,
         'form': form,
         'avg_rating': avg_rating,
-        # 'page': page,
+        'page': page,
         'page_obj': page_obj,
     }
     return render(request, template, context)
@@ -98,14 +98,23 @@ def detail(request, pk):
 def searchbook(request):
     template = 'search_result.html'
     query = request.GET.get('q')
-
     if query:
         results = BookDetail.objects.filter(Q(Book_Title__icontains=query) | Q(Book_Author__icontains=query))
     else:
         results = BookDetail.objects.all()
-        
+
+    try:
+        paginator = Paginator(results, 8)  # 3 posts in each page
+        page = request.GET.get('page')
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    except:
+        raise Http404("Something went wrong.")
     context = {
-        'book': results,
+        'page_obj': page_obj,
     }
     return render(request, template, context)
 

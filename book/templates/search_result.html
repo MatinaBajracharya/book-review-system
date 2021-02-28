@@ -9,10 +9,10 @@
 </nav> <br>
 <!-- <p class="text-center title">Books</p> -->
 {% include "forum/search.html" %} <br>
-{% for item in book %}
+{% for item in page_obj %}
   <div class="card mb-3 mt-5 border-primary" style="max-width: 100%;">
     <div class="row no-gutters">
-      <div class="col-md-2">
+      <div class="col-md-2" style="padding:0;">
         <img src="{{ item.Image_URL_L }}" class="card-img" style="height: 300px; width: 200px;" alt="No preview">
       </div>
       <div class="col-md-10">
@@ -35,4 +35,7 @@
 {% empty %} 
   <p>No books to show.</p>
 {% endfor %}
+<div>
+  {% include "forum/pagination.html" %}
+</div>
 {% endblock %}

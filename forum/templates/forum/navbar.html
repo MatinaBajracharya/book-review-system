@@ -7,8 +7,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mx-auto">   
-              {% if user.is_authenticated %}
-              {% else %}
+              {% if title == 'Home' %}
               <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ml-auto">
                   <li class="nav-item active">

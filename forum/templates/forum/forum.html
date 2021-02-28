@@ -1,8 +1,18 @@
 {% extends "forum/base.html" %}
 {% block content %}
-<div class="row">
-  <div class="col-8">
-      {% for post in posts %}
+<div class="input-group flex-nowrap w-50 mx-auto mb-3">
+  <div class="input-group">
+    <form action="{% url 'search' %}" method="GET">
+    <input name="q" type="search" class="form-control input" placeholder="Search" aria-label="Search" value="{{request.GET.q}}">
+    <div class="input-group-append">
+      <button class="btn btn-secondary search" style="width: 50px;" type="submit"><i class="fas fa-search"></i></button>
+    </div>
+  </form>
+  </div>
+</div>
+
+<div class="container" >
+  {% for post in page_obj %}
       <article class="media content-section">
         <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="">
           <div class="media-body">
@@ -22,28 +32,18 @@
                 <button type="submit" style="border: none; background-color: transparent;"><i class="fas fa-heart" style="color: red;"></i></button>
                 {% endif %}
               </form>
-            </h5>
-            <strong>{{ post.likes.all.count }} Likes</strong>
-            <strong>{{ comment }} Comments</strong>
+            </h5> <hr>
+            <strong style="font-family: Arial, Helvetica, sans-serif;">{{ post.likes.all.count }} Likes</strong>
+            <strong style="font-family: Arial, Helvetica, sans-serif;">{{ comment }} Comments</strong>
           </div>
       </article>
       {% empty %}
       <div class="container">
         <h3 class="text-center">No posts found!</h3>
       </div>
-      {% endfor %}
-    </div>
-    <div class="col-4">
-      <div class="card border-dark mb-3" style="max-width: 25rem;">
-        <div class="card-header">Search</div>
-        <div class="card-body text-dark">
-          <form class="form-inline my-2 my-lg-0" method="GET" action="{% url 'search' %}">
-            <input name="q" class="form-control mr-sm-2" type="search" placeholder="Search for a post.." aria-label="Search" value="{{request.GET.q}}">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
-    </div>
-  </div>
-    {% include "forum/pagination.html" %}
+  {% endfor %}  
+</div>
+  
+{% include "forum/pagination.html" %}
 {% endblock content %}
 

@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 from django.db.models import Q
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import PostForm
 
 # Create your views here.
@@ -25,9 +25,20 @@ def forum(request):
     else:
         results = Post.objects.all()
         
+    try:
+        paginator = Paginator(results, 4)  # 3 posts in each page
+        page = request.GET.get('page')
+        page_obj = paginator.page(page)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    except:
+        raise Http404("Something went wrong.")
+
     context = {
-        'posts': results,
         'title': 'Forum',
+        'page_obj': page_obj,
     }
     return render(request, 'forum/forum.html', context)
 
@@ -57,6 +68,7 @@ class PostListView(ListView):
     template_name = 'forum/forum.html'
     context_object_name = 'posts'
     paginate_by = 5
+    ordering = ['-date_posted']
 
 # class PostSearchView(ListView):
 #     model = Post

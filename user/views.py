@@ -12,20 +12,23 @@ def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
             username = form.cleaned_data.get('username')
-            messages.success(request, f'Welcome to our community { username }! Please login to continue.')
-            return redirect('login')
+            email = form.cleaned_data.get('email')
+            if User.objects.filter(email=email).exists():
+                messages.error(request, f'Email already exists! Please enter a different email.')
+                return redirect('register')
+            else:  
+                form.save()  
+                messages.success(request, f'Welcome to our community { username }! Please login to continue.')
+                return redirect('login')
     else:
         form = UserRegisterForm()
     return render(request, 'user/register.html', {'form': form})
 
 def DeleteProfile(request, pk):
     u_id = request.user.id
-    profile_uid = User.objects.get(pk = pk)
+    profile_uid = User.objects.get(id = pk)
     p_id = profile_uid.id
-    print(p_id)
-    print(u_id)
     if request.method == 'POST':
         if p_id == u_id:
             profile_uid.delete()
@@ -63,3 +66,7 @@ def profile(request, pk):
         'p_form': p_form,
     }
     return render(request, 'forum/profile.html', context)
+
+def user_logout(request):
+    logout(request)
+    return redirect('home')
