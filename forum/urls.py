@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls import url
 from . import views
-from .views import like_post, PostListView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView
+from .views import like_post, PostListView, PostCreateView, PostUpdateView, PostDeleteView, UserPostListView, autosuggest
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -13,4 +13,5 @@ urlpatterns = [
     path('post/<int:pk>/delete', PostDeleteView.as_view(), name='post-delete'),
     path('user/<str:username>', UserPostListView.as_view(), name='user-posts'),
     url(r'^results/$', views.forum, name="search"),
+    path('autosuggest/', autosuggest, name='autosuggest'),
 ]

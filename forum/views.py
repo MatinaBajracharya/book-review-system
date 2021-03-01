@@ -10,6 +10,7 @@ from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import PostForm
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -185,4 +186,11 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
+
+def autosuggest(request):
+    query_original = request.GET.get('term')
+    queryset = Post.objects.filter(Q(title__icontains=query_original))
+    mylist = []
+    mylist += [x.title for x in queryset]
+    return JsonResponse(mylist, safe=False)
 

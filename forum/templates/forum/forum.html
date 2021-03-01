@@ -3,7 +3,7 @@
 <div class="input-group flex-nowrap w-50 mx-auto mb-3">
   <div class="input-group">
     <form action="{% url 'search' %}" method="GET">
-    <input name="q" type="search" class="form-control input" placeholder="Search" aria-label="Search" value="{{request.GET.q}}">
+    <input name="q" id="tags" type="search" class="form-control input" placeholder="Search" aria-label="Search" value="{{request.GET.q}}">
     <div class="input-group-append">
       <button class="btn btn-secondary search" style="width: 50px;" type="submit"><i class="fas fa-search"></i></button>
     </div>
