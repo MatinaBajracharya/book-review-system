@@ -8,8 +8,8 @@
             <small class="text-muted">{{ object.date_posted|date:"F d, Y"}}</small>
             {% if object.author == user %}
               <!-- Default dropleft button -->
-              <div class="btn-group dropleft">
-                <button type="button" class="settings btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <div class="btn-group ml-5">
+                <button type="button" class="settings btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fas fa-cogs"></i>
                 </button>
                 <div class="dropdown-menu">
@@ -31,21 +31,23 @@
                 <button type="submit" style="border: none; background-color: transparent;"><i class="fas fa-heart" style="color: red;"></i></button>
                 {% endif %}
               </form>
-              <i class="far fa-comment"></i>
+              <i class="far fa-comment fa-flip-horizontal ml-3"></i><hr>
             </h5>
-              <p>{{ object.likes.all.count }} Likes</p><hr>
+              <p>{{ object.likes.all.count }} Likes</p>
               {% if user.is_authenticated %}
                 {% for c in comments %}
                   <img class="rounded-circle article-img" src="{{ c.0.user.profile.image.url }}" alt="">
                   <p class="user card-text"><strong>{{ c.0.user.username }}</strong> {{c.0.comment}} <br> <small>{{ c.0.time }}</small></p>
                   
                   <p id="{{ c.0.id }}"><button onclick="ReplyForm('{{ c.0.id }}')" class="reply">Reply</button></p>
-                  {% for subc in c.1 %}
-                    <img class="ml-5 rounded-circle article-img" src="{{ subc.user.profile.image.url }}" alt="">
-                    <p class="subcomment"><strong>{{ subc.user.username }}</strong> {{subc.comment}} <br> <small>{{ subc.time }}</small></p>
-                    <br>
-                    
-                 {% endfor %}  
+                  <!-- <a id="show">View replies</a>  -->
+                    {% for subc in c.1 %}
+                      <div>
+                        <img class="ml-5 rounded-circle article-img" src="{{ subc.user.profile.image.url }}" alt="">
+                        <p class="subcomment"><strong>{{ subc.user.username }}</strong> {{subc.comment}} <br> <small>{{ subc.time }}</small></p>
+                        <br> 
+                      </div>
+                    {% endfor %}  
                 {% endfor %}
                 <hr>
                 <div class="comment-form-wrap">
@@ -55,7 +57,7 @@
                     <div class="form-group">
                       <img class="rounded-circle article-img" src="{{ request.user.profile.image.url }}" alt="">
                       <label for="message">Comment</label> 
-                      <textarea name="comm" id="message" cols="30" rows="3" class="form-control"></textarea>
+                      <textarea name="comm" id="message" cols="30" rows="3" class="form-control mt-2"></textarea>
                     </div>
                     <div class="form-group">
                       <input type="submit" value="Post Comment" class="btn btn-primary">

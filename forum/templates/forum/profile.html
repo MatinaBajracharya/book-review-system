@@ -46,6 +46,18 @@
                         <div class="article-metadata">
                             <a class="mr-2" href="{% url 'profile' post.author.id %}">{{ post.author }}</a>
                             <small class="text-muted">{{ post.date_posted|date:"F d, Y"}}</small>
+                            {% if request.user.id == u_id.id %}
+                                <!-- Default dropleft button -->
+                                <div class="btn-group" style="margin-left: 40%;">
+                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-cogs"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{% url 'post-update' request.user.id %}"><i class="fas fa-pencil-alt"></i> Update</i></a> 
+                                    <a class="dropdown-item" href="{% url 'post-delete' request.user.id %}"><i class="fas fa-trash"></i> Delete</a>
+                                    </div>
+                                </div>
+                            {% endif %}
                         </div>
                         <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
                         <p class="article-content">{{ post.content | safe }}</p>

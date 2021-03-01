@@ -63,7 +63,10 @@
             </div>
             {% empty %}
             <p class="review-title text-center mt-5">No reviews yet!</p>
-            {% endfor %}
+        {% endfor %}
+        <div style="margin-left: -40%;">
+            {% include "forum/pagination.html" %}
+        </div>
     </div>
     <div class="col-md-6 mb-4">
         <h4 class="review-title">Write Your Review</h4>
@@ -95,8 +98,5 @@
             {% endif %}
         </form>
     </div>
-</div>
-<div>
-    {% include "forum/pagination.html" %}
 </div>
 {% endblock %}

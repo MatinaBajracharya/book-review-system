@@ -93,11 +93,6 @@ a.article-title:hover {
 }
 
 /***************Profile Page*************************/
-.profile{
-  padding-top: 90px;
-  margin: 0 100px;
-}
-
 .profile-header{
   background:white;
   /* margin: 50px; */
@@ -203,7 +198,7 @@ button.changebtn{
   padding: 10px;
   width: 100%;
   border-radius: 3px;
-  background: rgb(136, 82, 100);
+  background: palevioletred;
   font-size: 1rem;
   margin: 5px 2px;
   cursor: pointer;
@@ -214,8 +209,8 @@ button.changebtn{
   color: fff;
 }
 
-button.createbtn:hover{
-  background: rgba(288, 0, 70, .9);
+button.createbtn:hover, button.changebtn:hover{
+  background: #E75480;
 }
 
 .fa-plus {
@@ -279,12 +274,12 @@ button.createbtn:hover{
     top: 50px;
   }
 
-  .settings{
+  /* .settings{
     margin-left: -4rem;
-  }
+  } */
 
-  .comment-form-wrap{
-    width: 75%;
+  .comment-form-wrap form{
+    width: 100%;
   }
 }
 
@@ -324,11 +319,11 @@ button.createbtn:hover{
     padding: 20px;
     margin: 5px 0;
   }
-  .settings{
+  /* .settings{
     margin-left: 0rem;
-  }
-  .comment-form-wrap{
-    width: 45%;
+  } */
+  .comment-form-wrap form{
+    width: 100%;
   }
 }
 
@@ -339,12 +334,12 @@ button.createbtn:hover{
   .profile-header h3{
     font-size: 1.7rem;
   }
-  .settings{
+  /* .settings{
     margin-left: 10rem;
-  }
+  } */
 
-  .comment-form-wrap{
-    width: 45%;
+  .comment-form-wrap form{
+    width: 50%;
   }
 }
 
@@ -365,9 +360,9 @@ button.createbtn:hover{
   padding-left: 120px;
 }
 
-.settings{
+/* .settings{
   margin-left: 45rem;
-}
+} */
 
 /************Browse Page******************/
 .title{
@@ -475,6 +470,10 @@ textarea{
 
 .fa-star.empty {
   color: #DADADA;
+}
+
+.single-review .review-heading div a{
+  color: #343a40;
 }
 
 /* .half i{
