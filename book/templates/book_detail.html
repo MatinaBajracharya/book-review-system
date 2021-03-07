@@ -1,5 +1,12 @@
 {% extends "forum/base.html" %}
-
+{% block style %}
+<style>
+    .rating-num{
+        font-size: 70px;
+        color: green;
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="container book-detail">
     <nav aria-label="breadcrumb">
@@ -40,33 +47,13 @@
 <br> 
 <hr>  
 <div class="row">
-    <div class="col-md-6">
-        <h4 class="review-title">Reviews</h4>
-        {% for review in page_obj %}
-            <div class="product-reviews">
-                <div class="single-review">
-                    <div class="review-heading">
-                        <div><a href="#"><i class="fa fa-user"></i> @{{ review.user.username }}</a> </div>
-                        <div><a href="#"><i class="fa fa-clock"></i> {{ review.date_posted }}</a></div>
-                        <div class="review-rating pull-right">
-                            <i class="fa fa-star {% if review.rating < 1 %} empty {% endif %}"></i>
-                            <i class="fa fa-star {% if review.rating < 2 %} empty {% endif %}"></i>
-                            <i class="fa fa-star {% if review.rating < 3 %} empty {% endif %}"></i>
-                            <i class="fa fa-star {% if review.rating < 4 %} empty {% endif %}"></i>
-                            <i class="fa fa-star {% if review.rating < 5 %} empty {% endif %}"></i>
-                        </div>
-                    </div>
-                    <div class="review-body">
-                        <p>{{ review.review }}</p>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <p class="review-title text-center mt-5">No reviews yet!</p>
-        {% endfor %}
-        <div style="margin-left: -40%;">
-            {% include "forum/pagination.html" %}
-        </div>
+    <div class="col-md-6" style="text-align: center;">
+        <!-- <div class="card">
+            <div class="card-body" style="text-align: center;"> -->
+                <div class="text-muted">Overall customer satisfaction</div> <br>
+                <p class="rating-num">{% if avg_rating == null %}0{% else %}{{ avg_rating }}{% endif %}<strong style="color: grey;">/5</strong></p>
+            <!-- </div>
+          </div> -->
     </div>
     <div class="col-md-6 mb-4">
         <h4 class="review-title">Write Your Review</h4>
@@ -98,5 +85,33 @@
             {% endif %}
         </form>
     </div>
-</div>
+</div><hr>
+<fieldset>
+    <legend><h4 class="review-title">Reviews</h4></legend>
+        {% for review in page_obj %}
+            <div class="product-reviews">
+                <div class="single-review">
+                    <div class="review-heading">
+                        <div><a href="#"><i class="fa fa-user"></i> @{{ review.user.username }}</a> </div>
+                        <div><a href="#"><i class="fa fa-clock"></i> {{ review.date_posted }}</a></div>
+                        <div class="review-rating pull-right">
+                            <i class="fa fa-star {% if review.rating < 1 %} empty {% endif %}"></i>
+                            <i class="fa fa-star {% if review.rating < 2 %} empty {% endif %}"></i>
+                            <i class="fa fa-star {% if review.rating < 3 %} empty {% endif %}"></i>
+                            <i class="fa fa-star {% if review.rating < 4 %} empty {% endif %}"></i>
+                            <i class="fa fa-star {% if review.rating < 5 %} empty {% endif %}"></i>
+                        </div>
+                    </div>
+                    <div class="review-body">
+                        <p>{{ review.review }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="review-title text-center mt-5">No reviews yet!</p>
+        {% endfor %}
+        <div class="mx-auto">
+            {% include "forum/pagination.html" %}
+        </div>
+</fieldset>
 {% endblock %}

@@ -1,4 +1,42 @@
 {% extends "forum/base.html" %}
+
+{% block style %}
+
+<style>
+  .col-6{
+    margin: 0px;
+    padding: 0px;
+  }
+  .like-form{
+    text-align: center;
+    background: whitesmoke;
+    padding: 0px;
+    margin-left: 15px;
+  }
+  .comment-text{
+    text-align: center;
+    background: whitesmoke;
+    margin-right: 15px;
+    padding: 0px;
+  }
+  .btn-down{
+    border: none;
+    margin: 0;
+    padding: 20px 180px 20px 180px;
+    background-color: transparent;
+  }
+  .divider{
+    float: left;
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    width:1px;
+    border-left:1px solid gainsboro;
+  }
+</style>
+
+{% endblock %}
+
 {% block content %}
 <div class="input-group flex-nowrap w-50 mx-auto mb-3">
   <div class="input-group">
@@ -22,19 +60,47 @@
             </div>
             <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content | safe }}</p>
-            <h5>
-              <form action="{% url 'likes' %}" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="post_id" value="{{ post.id }}">
-                {% if user not in post.likes.all %}
-                <button type="submit" style="border: none; background-color: transparent;"><i class="far fa-heart" style="color: black;"></i></button>
-                {% else %}
-                <button type="submit" style="border: none; background-color: transparent;"><i class="fas fa-heart" style="color: red;"></i></button>
-                {% endif %}
-              </form>
-            </h5> <hr>
-            <strong style="font-family: Arial, Helvetica, sans-serif;">{{ post.likes.all.count }} Likes</strong>
-            <!-- <strong style="font-family: Arial, Helvetica, sans-serif;">{{ comment.all.count }} Comments</strong> -->
+            <div class="like-count{{ post.id }} float-left" style="font-family: Arial, Helvetica, sans-serif;"><i class="fas fa-heart" style="color: red;"></i> {{ post.likes.all.count }} Likes</div>
+            <strong class="float-right mt-0" style="font-family: Arial, Helvetica, sans-serif;">{{ comment.all.count }} Comments</strong>
+            <div class="clearfix"></div><hr class="mt-0">
+            <div class="row">
+              <div class="col-6 mx-auto">
+                <form action="{% url 'likes' %}" method="POST" class="like-form" id="{{ post.id }}" >
+                  {% csrf_token %}
+                  <input type="hidden" name="post_id" value="{{ post.id }}">
+                  {% if user not in post.likes.all %}
+                  <button type="submit" value="like" class="like-btn{{ post.id }} btn-down"><i class="far fa-heart" style="color: black;"></i> Like </button>
+                  {% else %}
+                  <button type="submit" value="unlike" class="like-btn{{ post.id }} btn-down"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
+                  {% endif %}
+                </form>
+              </div>
+              <div class="col-6 mx-auto">
+                <div class="divider"></div>
+                <div class="comment-text">
+                  <button type="button" class="comment{{ post.id }} btn-down" id="comment{{ post.id }}">Comment</button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- comment form  -->
+            <form method="POST" class="p-3 bg-light comment-form{{ post.id }}">
+              {% csrf_token %}
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-1">
+                    <img class="rounded-circle article-img" src="{{ request.user.profile.image.url }}" alt="">
+                  </div>
+                  <div class="col-9">
+                    <!-- <label for="message"></label>  -->
+                    <input name="comm" id="message" class="form-control mt-2" placeholder="Write a comment...">
+                  </div>
+                  <div class="col-2">
+                    <input type="submit" value="Post" class="btn btn-primary mt-2">
+                  </div>
+                </div>
+              </div>
+            </form> 
           </div>
       </article>
       {% empty %}
@@ -46,4 +112,48 @@
   
 {% include "forum/pagination.html" %}
 {% endblock content %}
+{%block script%} 
+  <script>
+    $(document).ready(function() {
+      // Like 
+      $('.like-form').submit(function(e){
 
+        e.preventDefault()
+        
+        const post_id = $(this).attr('id')
+        
+        const likeText = $(`.like-btn${post_id}`).text()
+        const trim = $.trim(likeText)
+
+        const url = $(this).attr('action')
+        
+        let res;
+        const likes = $(`.like-count${post_id}`).text()
+        const trimCount = parseInt(likes)
+        
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                'post_id':post_id,
+            },
+            success: function(response) {
+                if(trim === 'Unlike') {
+                    $(`.like-btn${post_id}`).html("<i class='far fa-heart' style='color: black;'></i> Like")
+                    res = trimCount - 1
+                } else {
+                    $(`.like-btn${post_id}`).html("<i class='fas fa-heart' style='color: red;'></i> Unlike")
+                    res = trimCount + 1
+                }
+
+                $(`.like-count${post_id}`).html("<i class='fas fa-heart' style='color: red;'></i> "+ res + " Likes")
+            },
+            error: function(response) {
+                console.log('error', response)
+            }
+        })
+      })
+    });
+  </script>
+{%endblock script%}

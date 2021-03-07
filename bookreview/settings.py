@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'sslserver',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
@@ -42,10 +43,8 @@ INSTALLED_APPS = [
     'social_django',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
-
     'django_summernote',
     'import_export',
-
     'forum.apps.ForumConfig',
     'user.apps.UserConfig',
     'book.apps.BookConfig',
@@ -140,8 +139,28 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         }
-    }
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'email',
+            'first_name',
+            'last_name',
+        ],
+        # 'EXCHANGE_TOKEN': True,
+        # 'LOCALE_FUNC': 'path.to.callable',
+        # 'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.12',
+    },
 }
+
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = ("https")
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = (True)
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+# SECURE_SSL_REDIRECT = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -180,6 +199,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'

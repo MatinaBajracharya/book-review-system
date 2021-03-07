@@ -14,7 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from django.conf.urls import url, include
 from user import views as user_views
 from django.contrib.auth import views as auth_views
 from django.conf import settings
@@ -23,6 +24,7 @@ from book.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^accounts/', include('allauth.urls')),
     path('register/', user_views.register, name='register'),
     path('password_change/', auth_views.PasswordChangeView.as_view(template_name='user/changepassword.html'), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='user/passwordchanged.html'), name='password_change_done'),
@@ -35,7 +37,6 @@ urlpatterns = [
     path('password-reset-complete/', auth_views.PasswordResetCompleteView.as_view(template_name='user/password_reset_complete.html'), name='password_reset_complete'), 
     path('', include('forum.urls')),
     path('summernote/', include('django_summernote.urls')),
-    path('accounts/', include('allauth.urls')),
     path('admin/upload-csv/', book_detail_upload, name="book_detail_upload"),
     # path('account/', include('django.contrib.auth.urls')),
     path('', include('book.urls')),

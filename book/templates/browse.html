@@ -6,9 +6,14 @@
 
   <div class="container book">
     {% for book in books %}
-    <a href="{% url 'book-detail' book.id %}"><img src="{{ book.Image_URL_L }}" alt="img" id="img"></a>
+    <!-- <div class="display"> -->
+      <a href="{% url 'book-detail' book.id %}"><img src="{{ book.Image_URL_L }}" alt="img" id="img"></a>
+      <!-- <div class="name">
+        See More..
+      </div> -->
+    <!-- </div>  -->
     {% empty %}
-    <p>NO data</p>
+    <p>No data</p>
     {% endfor %}
   </div>
 

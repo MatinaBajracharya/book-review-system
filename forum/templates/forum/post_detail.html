@@ -21,6 +21,7 @@
           </div>
           <h2 class="article-title">{{ object.title }}</h2>
           <p class="article-content">{{ object.content | safe }}</p>
+          <hr>
             <h5 class="card-title">
               <form action="{% url 'likes' %}" method="POST" style="display: inline;">
                 {% csrf_token %}
@@ -31,9 +32,10 @@
                 <button type="submit" style="border: none; background-color: transparent;"><i class="fas fa-heart" style="color: red;"></i></button>
                 {% endif %}
               </form>
-              <i class="far fa-comment fa-flip-horizontal ml-3"></i><hr>
+              <i class="far fa-comment fa-flip-horizontal ml-3"></i>
             </h5>
               <p>{{ object.likes.all.count }} Likes</p>
+              <hr>
               {% if user.is_authenticated %}
                 {% for c in comments %}
                   <img class="rounded-circle article-img" src="{{ c.0.user.profile.image.url }}" alt="">
