@@ -1,4 +1,32 @@
 {% extends "forum/base.html" %}
+{% block style %}
+<style>
+  .btn-down{
+    border: none;
+    margin: 0;
+    padding: 0px;
+    background-color: transparent;
+  }
+  .like-form{
+    text-align: center;
+    /* background: whitesmoke; */
+    padding: 0px;
+    margin-left: 15px;
+  }
+  .clearbox{
+    clear:both;
+  }
+  .like-sec{
+    margin: 10px 0px 10px 0;
+  }
+  .like-sec > form{
+    margin: 0;
+    padding: 0;
+    display: inline;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
     <article class="media content-section">
       <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}" alt="">
@@ -8,7 +36,7 @@
             <small class="text-muted">{{ object.date_posted|date:"F d, Y"}}</small>
             {% if object.author == user %}
               <!-- Default dropleft button -->
-              <div class="btn-group ml-5">
+              <div class="btn-group ml-5 float-right">
                 <button type="button" class="settings btn dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="fas fa-cogs"></i>
                 </button>
@@ -17,24 +45,25 @@
                   <a class="dropdown-item" href="{% url 'post-delete' object.id %}"><i class="fas fa-trash"></i> Delete</a>
                 </div>
               </div>
+              <div class="clearbox"></div>
             {% endif %}
           </div>
           <h2 class="article-title">{{ object.title }}</h2>
           <p class="article-content">{{ object.content | safe }}</p>
           <hr>
-            <h5 class="card-title">
-              <form action="{% url 'likes' %}" method="POST" style="display: inline;">
+            <div class="like-sec">
+              <form action="{% url 'likes' %}" method="POST" class="like-form" id="{{ object.id }}" >
                 {% csrf_token %}
                 <input type="hidden" name="post_id" value="{{ object.id }}">
-                {% if request.user not in object.likes.all %}
-                <button type="submit" style="border: none; background-color: transparent;"><i class="far fa-heart" style="color: black;"></i></button>
+                {% if user not in object.likes.all %}
+                <button type="submit" value="like" class="like-btn{{ object.id }} btn-down"><i class="far fa-heart" style="color: black;"></i> Like </button>
                 {% else %}
-                <button type="submit" style="border: none; background-color: transparent;"><i class="fas fa-heart" style="color: red;"></i></button>
+                <button type="submit" value="unlike" class="like-btn{{ object.id }} btn-down"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
                 {% endif %}
               </form>
-              <i class="far fa-comment fa-flip-horizontal ml-3"></i>
-            </h5>
-              <p>{{ object.likes.all.count }} Likes</p>
+              <i class="far fa-comment fa-flip-horizontal ml-3" id="comment-icon" style="cursor: pointer;"></i>
+            </div>
+            <div class="like-count{{ object.id }}">{{ object.likes.all.count }} Likes</div>
               <hr>
               {% if user.is_authenticated %}
                 {% for c in comments %}
@@ -49,17 +78,17 @@
                         <p class="subcomment"><strong>{{ subc.user.username }}</strong> {{subc.comment}} <br> <small>{{ subc.time }}</small></p>
                         <br> 
                       </div>
-                    {% endfor %}  
+                    {% endfor %}
                 {% endfor %}
-                <hr>
+                <hr class="com-wrap">
                 <div class="comment-form-wrap">
                   <h4>Leave a comment</h4>
-                  <form method="POST" class="p-3 bg-light">
+                  <form method="POST" class="p-3 bg-light com-form" action="{% url 'post-detail' object.id %}">
                     {% csrf_token %}
                     <div class="form-group">
-                      <img class="rounded-circle article-img" src="{{ request.user.profile.image.url }}" alt="">
+                      <img class="rounded-circle article-img" src="{{ request.user.profile.image.url }}">
                       <label for="message">Comment</label> 
-                      <textarea name="comm" id="message" cols="30" rows="3" class="form-control mt-2"></textarea>
+                      <textarea name="comm" id="message" cols="30" rows="3" class="form-control mt-2" required></textarea>
                     </div>
                     <div class="form-group">
                       <input type="submit" value="Post Comment" class="btn btn-primary">
@@ -71,24 +100,124 @@
                   <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.appletips.nl%2Fwp-content%2Fuploads%2F2015%2F07%2Floadingapp.png&f=1&nofb=1" alt="" class="mx-auto d-block" style="height: 10%; width: 10%;">
                   <h3>Cannot interact with the post?</h3> 
                   <p>Please <a href="{% url 'login' %}">Login</a> or <a href="{% url 'register' %}">Register</a> to do so! </p>
-                </div>  
+                </div>
               {% endif %} 
         </div>
     </article>
-    <script type="text/javascript">
-      function ReplyForm(id){
-        let elm = `<form method="POST" class="p-3 bg-light">
-                    {% csrf_token %}
-                      <div class="form-group">
-                      <input type='text' value='${id}' name = 'comm_id' style="display:none;" readonly/>
-                        <label for="message">Reply</label>
-                        <textarea name="comm" id="message" cols="30" rows="3" class="form-control"></textarea>
-                      </div>
-                      <div class="form-group">
-                        <input type="submit" value="Post Comment" class="btn btn-primary">
-                      </div>
-                  </form>`;
-                  document.getElementById(id).innerHTML = elm;
-      }
-    </script>
 {% endblock content %}
+
+{%block script%} 
+  <script>
+
+    var dt = new Date();
+    function addZero(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+        return i;
+    }
+    const date = dt.getDate();
+    var month = new Array();
+    month[0] = "January";
+    month[1] = "February";
+    month[2] = "March";
+    month[3] = "April";
+    month[4] = "May";
+    month[5] = "June";
+    month[6] = "July";
+    month[7] = "August";
+    month[8] = "September";
+    month[9] = "October";
+    month[10] = "November";
+    month[11] = "December";
+    var n = month[dt.getMonth()];
+    const year = dt.getFullYear();
+    var h =  dt.getHours(), m = addZero(dt.getMinutes());
+    var _date = n  + ' ' + date + ', ' + year + ', ';
+    var _time = (h > 12) ? (h-12 + ':' + m +' p.m.') : (h-12 + ':' + m +' a.m.');
+    var _datetime = _date + _time;
+
+    function ReplyForm(id){
+      let elm = `<form method="POST" class="p-3 bg-light">
+                  {% csrf_token %}
+                    <div class="form-group">
+                    <input type='text' value='${id}' name = 'comm_id' style="display:none;" readonly/>
+                      <label for="message">Reply</label>
+                      <textarea name="comm" id="message" cols="30" rows="3" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <input type="submit" value="Post Comment" class="btn btn-primary">
+                    </div>
+                </form>`;
+      document.getElementById(id).innerHTML = elm;
+    }
+
+    $(document).ready(function() {
+      $(`#comment-icon`).click(function() {
+        $('#message').focus();
+        console.log("uhtue");
+      });
+      //Comment
+      $('.com-form').submit(function(e){
+        e.preventDefault();
+        var uName = `{{request.user.username}}`;
+        var uImage = `{{request.user.profile.image.url}}`;
+        const comPost = $("#message").val();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'post-detail' object.id %}",
+            data: $(".com-form").serialize(),
+            dataType: 'json',
+            success: function(data){
+                if (data.msg == 'Success'){
+                    $('textarea').val('');
+                    $('.com-wrap').before(
+                        "<img class='rounded-circle article-img' src='"+ uImage +"'><p class='user card-text'><strong>"+ uName +"</strong> " + comPost + " <br> <small>"+ _datetime +"</small></p>"
+                    );
+                }
+            }
+          });
+        });
+
+      // Like 
+      $('.like-form').submit(function(e){
+
+        e.preventDefault()
+        
+        const post_id = $(this).attr('id')
+        
+        const likeText = $(`.like-btn${post_id}`).text()
+        const trim = $.trim(likeText)
+
+        const url = $(this).attr('action')
+        
+        let res;
+        const likes = $(`.like-count${post_id}`).text()
+        const trimCount = parseInt(likes)
+        
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val(),
+                'post_id':post_id,
+            },
+            success: function(response) {
+                if(trim === 'Unlike') {
+                    $(`.like-btn${post_id}`).html("<i class='far fa-heart' style='color: black;'></i> Like")
+                    res = trimCount - 1
+                } else {
+                    $(`.like-btn${post_id}`).html("<i class='fas fa-heart' style='color: red;'></i> Unlike")
+                    res = trimCount + 1
+                }
+
+                $(`.like-count${post_id}`).html(res + " Likes")
+            },
+            error: function(response) {
+                console.log('error', response)
+            }
+        })
+      })
+    });
+  </script>
+{%endblock script%}

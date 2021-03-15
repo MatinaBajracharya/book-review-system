@@ -1,4 +1,5 @@
 {% extends "forum/base.html"%}
+{% load static %}
 {% block content %}
 <div class="container profile">
     <div class="profile-header">
@@ -106,8 +107,11 @@
                 </div>
             </div>
         </div>
-        
     {% endif %}
 </div>
-
 {% endblock content %}
+
+{% block script %}
+    <!-- Nav Js for profile -->
+    <script src="{% static 'forum/js/nav.js' %}"></script>
+{% endblock %}

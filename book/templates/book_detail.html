@@ -58,20 +58,20 @@
     <div class="col-md-6 mb-4">
         <h4 class="review-title">Write Your Review</h4>
         <p class="text-muted small">Your email address will not be published.</p>
-        <form class="review-form" action="{% url 'book-detail' book.id%}" method="post">
+        <form class="review-form" action="{% url 'book-detail' book.id%}" method="post" id="review-form">
             {% csrf_token %}
             <div class="form-group mb-0">
-                <textarea name="comment" class="form-group" placeholder="Your review here.." required></textarea><br>
+                <textarea name="comment" class="form-group" id="reviewPost" placeholder="Your review here.." required></textarea><br>
             </div>
             <div class="form-group">
                 <div class="input-rating">
                     <strong class="text-uppercase">Your Rating: </strong><br>
                     <div class="stars">
-                        <input type="radio" id="star5" name="rate" value="5" /><label for="star5"></label>
-                        <input type="radio" id="star4" name="rate" value="4" /><label for="star4"></label>
-                        <input type="radio" id="star3" name="rate" value="3" /><label for="star3"></label>
-                        <input type="radio" id="star2" name="rate" value="2" /><label for="star2"></label>
-                        <input type="radio" id="star1" name="rate" value="1" /><label for="star1"></label>
+                        <input type="radio" class="rateStar" id="star5" name="rate" value="5" /><label for="star5"></label>
+                        <input type="radio" class="rateStar" id="star4" name="rate" value="4" /><label for="star4"></label>
+                        <input type="radio" class="rateStar" id="star3" name="rate" value="3" /><label for="star3"></label>
+                        <input type="radio" class="rateStar" id="star2" name="rate" value="2" /><label for="star2"></label>
+                        <input type="radio" class="rateStar" id="star1" name="rate" value="1" /><label for="star1"></label>
                     </div>
                 </div>
                 {% for err in form.comment.errors %}
@@ -87,7 +87,7 @@
     </div>
 </div><hr>
 <fieldset>
-    <legend><h4 class="review-title">Reviews</h4></legend>
+    <legend class="review-start"><h4 class="review-title">Reviews</h4></legend>
         {% for review in page_obj %}
             <div class="product-reviews">
                 <div class="single-review">
@@ -115,3 +115,80 @@
         </div>
 </fieldset>
 {% endblock %}
+
+{% block script %} 
+    <script>
+        var dt = new Date();
+        function addZero(i) {
+        if (i < 10) {
+            i = "0" + i;
+        }
+            return i;
+        }
+        const date = dt.getDate();
+        var month = new Array();
+        month[0] = "January";
+        month[1] = "February";
+        month[2] = "March";
+        month[3] = "April";
+        month[4] = "May";
+        month[5] = "June";
+        month[6] = "July";
+        month[7] = "August";
+        month[8] = "September";
+        month[9] = "October";
+        month[10] = "November";
+        month[11] = "December";
+        var n = month[dt.getMonth()];
+        const year = dt.getFullYear();
+        var h =  dt.getHours(), m = addZero(dt.getMinutes());
+        var _date = n  + ' ' + date + ', ' + year + ', ';
+        var _time = (h > 12) ? (h-12 + ':' + m +' p.m.') : (h-12 + ':' + m +' a.m.');
+        var _datetime = _date + _time;
+
+        const form = document.getElementById('review-form')
+        form.addEventListener("submit", submitHandler);
+        
+        function submitHandler(e){
+            e.preventDefault();
+            
+            var uName = `{{request.user.username}}`;
+            const reviewPost = $("#reviewPost").val();
+            const reviewStar = $(".rateStar:checked").val();
+
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'book-detail' book.id %}",
+                data: $("#review-form").serialize(),
+                dataType: 'json',
+                success: function(data){
+                    if (data.msg == 'Success'){
+                        form.reset();
+                        if(reviewStar == 1){
+                            $('.review-start').after(
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                            );
+                        }else if(reviewStar == 2){
+                            $('.review-start').after(
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                            );
+                        }else if(reviewStar == 3){
+                            $('.review-start').after(
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                            );
+                        }else if(reviewStar == 4){
+                            $('.review-start').after(
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star empty'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                            );
+                        } else if(reviewStar == 5){
+                            $('.review-start').after(
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                            );
+                        }
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock script %}
+

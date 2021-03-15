@@ -14,7 +14,7 @@
     margin-left: 15px;
   }
   .comment-text{
-    text-align: center;
+    /* text-align: center; */
     background: whitesmoke;
     margin-right: 15px;
     padding: 0px;
@@ -61,7 +61,7 @@
             <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
             <p class="article-content">{{ post.content | safe }}</p>
             <div class="like-count{{ post.id }} float-left" style="font-family: Arial, Helvetica, sans-serif;"><i class="fas fa-heart" style="color: red;"></i> {{ post.likes.all.count }} Likes</div>
-            <strong class="float-right mt-0" style="font-family: Arial, Helvetica, sans-serif;">{{ comment.all.count }} Comments</strong>
+            <strong class="float-right mt-0" style="font-family: Arial, Helvetica, sans-serif;">{{ comment.all.count }} <i class="far fa-comment fa-flip-horizontal ml-3"></i> Comments</strong>
             <div class="clearfix"></div><hr class="mt-0">
             <div class="row">
               <div class="col-6 mx-auto">
@@ -78,29 +78,10 @@
               <div class="col-6 mx-auto">
                 <div class="divider"></div>
                 <div class="comment-text">
-                  <button type="button" class="comment{{ post.id }} btn-down" id="comment{{ post.id }}">Comment</button>
+                  <a href="{% url 'post-detail' post.id %}"><button type="button" class="comment btn-down" id="comment{{ post.id }}"><i class="far fa-comment fa-flip-horizontal ml-2"></i> Comment</button></a>
                 </div>
               </div>
             </div>
-            
-            <!-- comment form  -->
-            <form method="POST" class="p-3 bg-light comment-form{{ post.id }}">
-              {% csrf_token %}
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-1">
-                    <img class="rounded-circle article-img" src="{{ request.user.profile.image.url }}" alt="">
-                  </div>
-                  <div class="col-9">
-                    <!-- <label for="message"></label>  -->
-                    <input name="comm" id="message" class="form-control mt-2" placeholder="Write a comment...">
-                  </div>
-                  <div class="col-2">
-                    <input type="submit" value="Post" class="btn btn-primary mt-2">
-                  </div>
-                </div>
-              </div>
-            </form> 
           </div>
       </article>
       {% empty %}

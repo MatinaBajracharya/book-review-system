@@ -7,7 +7,7 @@
   <div class="container book">
     {% for book in books %}
     <!-- <div class="display"> -->
-      <a href="{% url 'book-detail' book.id %}"><img src="{{ book.Image_URL_L }}" alt="img" id="img"></a>
+      <a href="{% url 'book-detail' book.id %}"><img src="{{ book.Image_URL_L }}" alt="img" id="img{{book.id}}"></a>
       <!-- <div class="name">
         See More..
       </div> -->
@@ -21,3 +21,12 @@
     {% include "forum/pagination.html" %}
   </div>
 {% endblock content%}
+
+{% block script %}
+<script>
+  const book_id = $(this).attr('id');
+  const bookImg = $(`#img${book_id}`);
+  $(`#img${book_id}`).addClass("no_image");
+
+</script>
+{% endblock %}

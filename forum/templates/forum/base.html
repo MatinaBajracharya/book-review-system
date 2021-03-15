@@ -18,8 +18,8 @@
     <!-- Rating -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
-      <!-- CSS -->
-      <link href="{% static 'forum/style.css' %}" rel="stylesheet">
+    <!-- CSS -->
+    <link href="{% static 'forum/style.css' %}" rel="stylesheet">
 
     <!-- Search Autocomplete -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
@@ -58,6 +58,7 @@
 
       .ui-menu{
         border-radius: 10px;
+        line-height: 50px;
       }
 
     </style>
@@ -68,6 +69,10 @@
     {% else %}
         <title>Book Review System</title>
     {% endif %}
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/jpg" href="{% static 'forum/images/download.png' %}"/>
+
     <!-- Font Awesome -->
     <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
 </head>
@@ -94,22 +99,30 @@
           <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-        <!-- Nav Js -->
-        <script src="{% static 'forum/js/nav.js' %}"></script>
         <!-- Rating JS -->
-        <script src="{% static 'forum/js/rating.js' %}"></script>
+        <!-- <script src="{% static 'forum/js/rating.js' %}"></script> -->
            <!-- Scripts -->
         <script src="{% static 'forum/js/smooth-scroll.js' %}"></script>
-        <script src="{% static 'forum/js/main.js' %}"></script>
         <script>
           var scroll = new SmoothScroll('a[href*="#"]');
-        </script>
-        <script>
+          $('.nav ul li').click(function () {
+              $(this).addClass("active").siblings().removeClass("active")
+           })
           $(document).ready(function(){
             $( "#tags" ).autocomplete({
               source: "{% url 'autosuggest' %}"
             });
-          })
+            var availableTags = [
+              "Classical Mythology",
+              "Clara Calan",
+              "The Mummies of Urumchi",
+              "Jane Doe",
+              "What If?",
+            ];
+            $( "#tagbook" ).autocomplete({
+              source: availableTags
+            });
+          });
         </script>
 
         {% block script %} {% endblock %}

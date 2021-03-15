@@ -8,6 +8,8 @@ from .forms import ReviewForm
 from django.db.models import Avg
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.core import serializers
+from django.http import JsonResponse
 
 # Create your views here.
 @permission_required('admin.can_add_log_entry')
@@ -74,17 +76,19 @@ def detail(request, pk):
     except:
         avg_rating = 0
 
-    print(page_obj)
-    if form.is_valid():
-        data = Review()
-        data.ISBN = BookDetail.objects.get(pk=pk)
-        data.review = form.cleaned_data['comment']
-        data.rating = form.cleaned_data['rate']
-        current_user= request.user
-        data.user_id=current_user.id
-        data.save()
-        messages.success(request, "Your review has ben sent. Thank you for your interest.")
-        return redirect('book-detail', pk=pk)
+    if request.is_ajax():
+        if form.is_valid():
+            data = Review()
+            data.ISBN = BookDetail.objects.get(pk=pk)
+            data.review = form.cleaned_data['comment']
+            data.rating = form.cleaned_data['rate']
+            current_user= request.user
+            data.user_id=current_user.id
+            data.save()
+            return JsonResponse({
+                'msg': 'Success'
+            })
+        messages.success(request, "Your review has been sent. Thank you for your interest.")
 
     context = {
         'book' : book,
@@ -118,6 +122,24 @@ def searchbook(request):
     }
     return render(request, template, context)
 
+#Pagination
+# def pagination(request):
+#     offset = int(request.POST['offset'])
+#     limit = 2
+#     posts = Post.objects.all()[offset: offset + limit]
+#     totalData = Post.objects.count()
+#     data = {}
+#     post_json = serializers.serialize('json', posts)
+#     return JsonResponse(data = {
+#         'posts': post_json,
+#         'totalResult': totalData,
+#     })
 
+def autosuggestbook(request):
+    query_original = request.GET.get('term')
+    queryset = Post.objects.filter(Q(Book_Title__icontains=query_original))
+    mylist = []
+    mylist += [x.title for x in queryset]
+    return JsonResponse(mylist, safe=False)
 
 

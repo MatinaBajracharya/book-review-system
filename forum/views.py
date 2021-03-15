@@ -124,8 +124,14 @@ def details(request, pk):
                 comment = comment,
                 comment_reply = Comment.objects.get(id=int(comm_id))
             ).save()
+            return JsonResponse({
+                'msg': 'Success'
+            })
         else:
             Comment(post=post, user = request.user, comment=comment).save()
+            return JsonResponse({
+                'msg': 'Success'
+            })
 
     comments = []
     for c in Comment.objects.filter(post=post):
