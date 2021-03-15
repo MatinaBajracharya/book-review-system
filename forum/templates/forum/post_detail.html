@@ -50,31 +50,31 @@
           </div>
           <h2 class="article-title">{{ object.title }}</h2>
           <p class="article-content">{{ object.content | safe }}</p>
-          <hr>
-            <div class="like-sec">
-              <form action="{% url 'likes' %}" method="POST" class="like-form" id="{{ object.id }}" >
-                {% csrf_token %}
-                <input type="hidden" name="post_id" value="{{ object.id }}">
-                {% if user not in object.likes.all %}
-                <button type="submit" value="like" class="like-btn{{ object.id }} btn-down"><i class="far fa-heart" style="color: black;"></i> Like </button>
-                {% else %}
-                <button type="submit" value="unlike" class="like-btn{{ object.id }} btn-down"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
-                {% endif %}
-              </form>
-              <i class="far fa-comment fa-flip-horizontal ml-3" id="comment-icon" style="cursor: pointer;"></i>
-            </div>
-            <div class="like-count{{ object.id }}">{{ object.likes.all.count }} Likes</div>
+          {% if user.is_authenticated %}
+            <hr>
+              <div class="like-sec">
+                <form action="{% url 'likes' %}" method="POST" class="like-form" id="{{ object.id }}" >
+                  {% csrf_token %}
+                  <input type="hidden" name="post_id" value="{{ object.id }}">
+                  {% if user not in object.likes.all %}
+                  <button type="submit" value="like" class="like-btn{{ object.id }} btn-down"><i class="far fa-heart" style="color: black;"></i> Like </button>
+                  {% else %}
+                  <button type="submit" value="unlike" class="like-btn{{ object.id }} btn-down"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
+                  {% endif %}
+                </form>
+                <i class="far fa-comment fa-flip-horizontal ml-3" id="comment-icon" style="cursor: pointer;"></i>
+              </div>
+              {% endif %}
+              <div class="like-count{{ object.id }}">{{ object.likes.all.count }} Likes</div>
               <hr>
               {% if user.is_authenticated %}
                 {% for c in comments %}
                   <img class="rounded-circle article-img" src="{{ c.0.user.profile.image.url }}" alt="">
                   <p class="user card-text"><strong>{{ c.0.user.username }}</strong> {{c.0.comment}} <br> <small>{{ c.0.time }}</small></p>
-                  
                   <p id="{{ c.0.id }}"><button onclick="ReplyForm('{{ c.0.id }}')" class="reply">Reply</button></p>
-                  <!-- <a id="show">View replies</a>  -->
                     {% for subc in c.1 %}
                       <div>
-                        <img class="ml-5 rounded-circle article-img" src="{{ subc.user.profile.image.url }}" alt="">
+                        <img class="ml-5 rounded-circle article-img" src="{{ subc.user.profile.image.url }}">
                         <p class="subcomment"><strong>{{ subc.user.username }}</strong> {{subc.comment}} <br> <small>{{ subc.time }}</small></p>
                         <br> 
                       </div>
@@ -138,18 +138,40 @@
     var _datetime = _date + _time;
 
     function ReplyForm(id){
-      let elm = `<form method="POST" class="p-3 bg-light">
+      let elm = `<form method="POST" class="p-3 bg-light sub-com-form" id="${id}" action="{% url 'post-detail' object.id %}">
                   {% csrf_token %}
                     <div class="form-group">
                     <input type='text' value='${id}' name = 'comm_id' style="display:none;" readonly/>
                       <label for="message">Reply</label>
-                      <textarea name="comm" id="message" cols="30" rows="3" class="form-control"></textarea>
+                      <textarea name="comm" id="subMessage" cols="30" rows="3" class="form-control" required></textarea>
                     </div>
                     <div class="form-group">
                       <input type="submit" value="Post Comment" class="btn btn-primary">
                     </div>
                 </form>`;
       document.getElementById(id).innerHTML = elm;
+      $('.sub-com-form').submit(function(e){
+        e.preventDefault();
+        var suName = `{{request.user.username}}`;
+        var suImage = `{{request.user.profile.image.url}}`;
+        const subComPost = $("#subMessage").val();
+        const post_id = $(this).attr('id')
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'post-detail' object.id %}",
+            data: $(".sub-com-form").serialize(),
+            dataType: 'json',
+            success: function(data){
+                if (data.msg == 'Success'){
+                    $('textarea').val('');
+                    $(`#${post_id}`).after(
+                      "<img class='ml-5 rounded-circle article-img' src='"+ suImage +"'><p class='subcomment'><strong>"+ suName +"</strong>" + subComPost + " <br> <small>"+ _datetime +"</small></p>"
+                    );
+                    $(`#${post_id}`).html("<p id='"+`${post_id}`+"'><button onclick='ReplyForm("+`${post_id}`+")' class='reply'>Reply</button></p>");
+                }
+            }
+          });
+      });
     }
 
     $(document).ready(function() {
@@ -157,6 +179,7 @@
         $('#message').focus();
         console.log("uhtue");
       });
+      
       //Comment
       $('.com-form').submit(function(e){
         e.preventDefault();

@@ -62,26 +62,29 @@
             <p class="article-content">{{ post.content | safe }}</p>
             <div class="like-count{{ post.id }} float-left" style="font-family: Arial, Helvetica, sans-serif;"><i class="fas fa-heart" style="color: red;"></i> {{ post.likes.all.count }} Likes</div>
             <strong class="float-right mt-0" style="font-family: Arial, Helvetica, sans-serif;">{{ comment.all.count }} <i class="far fa-comment fa-flip-horizontal ml-3"></i> Comments</strong>
-            <div class="clearfix"></div><hr class="mt-0">
-            <div class="row">
-              <div class="col-6 mx-auto">
-                <form action="{% url 'likes' %}" method="POST" class="like-form" id="{{ post.id }}" >
-                  {% csrf_token %}
-                  <input type="hidden" name="post_id" value="{{ post.id }}">
-                  {% if user not in post.likes.all %}
-                  <button type="submit" value="like" class="like-btn{{ post.id }} btn-down"><i class="far fa-heart" style="color: black;"></i> Like </button>
-                  {% else %}
-                  <button type="submit" value="unlike" class="like-btn{{ post.id }} btn-down"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
-                  {% endif %}
-                </form>
-              </div>
-              <div class="col-6 mx-auto">
-                <div class="divider"></div>
-                <div class="comment-text">
-                  <a href="{% url 'post-detail' post.id %}"><button type="button" class="comment btn-down" id="comment{{ post.id }}"><i class="far fa-comment fa-flip-horizontal ml-2"></i> Comment</button></a>
+            <div class="clearfix"></div>
+            {% if user.is_authenticated %}
+            <hr class="mt-0">
+              <div class="row">
+                <div class="col-6 mx-auto">
+                  <form action="{% url 'likes' %}" method="POST" class="like-form" id="{{ post.id }}" >
+                    {% csrf_token %}
+                    <input type="hidden" name="post_id" value="{{ post.id }}">
+                    {% if user not in post.likes.all %}
+                    <button type="submit" value="like" class="like-btn{{ post.id }} btn-down"><i class="far fa-heart" style="color: black;"></i> Like </button>
+                    {% else %}
+                    <button type="submit" value="unlike" class="like-btn{{ post.id }} btn-down"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
+                    {% endif %}
+                  </form>
+                </div>
+                <div class="col-6 mx-auto">
+                  <div class="divider"></div>
+                  <div class="comment-text">
+                    <a href="{% url 'post-detail' post.id %}"><button type="button" class="comment btn-down" id="comment{{ post.id }}"><i class="far fa-comment fa-flip-horizontal ml-2"></i> Comment</button></a>
+                  </div>
                 </div>
               </div>
-            </div>
+            {% endif %}  
           </div>
       </article>
       {% empty %}
