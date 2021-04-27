@@ -40,9 +40,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'social_django',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'social_django',
     'django_summernote',
     'import_export',
     'forum.apps.ForumConfig',
@@ -140,26 +140,26 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         }
     },
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'email',
-            'first_name',
-            'last_name',
-        ],
-        # 'EXCHANGE_TOKEN': True,
-        # 'LOCALE_FUNC': 'path.to.callable',
-        # 'VERIFIED_EMAIL': False,
-        'VERSION': 'v2.12',
-    },
+    # 'facebook': {
+    #     'METHOD': 'oauth2',
+    #     'SCOPE': ['email', 'public_profile'],
+    #     'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+    #     'INIT_PARAMS': {'cookie': True},
+    #     'FIELDS': [
+    #         'email',
+    #         'first_name',
+    #         'last_name',
+    #     ],
+    #     # 'EXCHANGE_TOKEN': True,
+    #     # 'LOCALE_FUNC': 'path.to.callable',
+    #     # 'VERIFIED_EMAIL': False,
+    #     'VERSION': 'v2.12',
+    # },
 }
 
-ACCOUNT_DEFAULT_HTTP_PROTOCOL = ("https")
-ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = (True)
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+# ACCOUNT_DEFAULT_HTTP_PROTOCOL = ("https")
+# ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = (True)
+# SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 # SECURE_SSL_REDIRECT = True
 
 # Password validation

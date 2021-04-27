@@ -1,17 +1,31 @@
 {% extends "forum/base.html" %}
 {% block content %}
 
-  <p class="text-center title">Books</p>
-  {% include "forum/search.html" %}
+  <p class="text-center title pt-2">Books</p>
+  {% include "forum/search.html" %} <br>
 
-  <div class="container book">
-    {% for book in books %}
-    <!-- <div class="display"> -->
-      <a href="{% url 'book-detail' book.id %}"><img src="{{ book.Image_URL_L }}" alt="img" id="img{{book.id}}"></a>
-      <!-- <div class="name">
-        See More..
-      </div> -->
-    <!-- </div>  -->
+  <!-- {% if page_obj.number == 1 %}
+  <div class="container">
+    <h3 style="padding-top: 50px;">Most Popular Books</h3>
+    {{rating_num.review}} 
+    {% if rating_num >= 3 %}
+      {% for rating_num in rating %}
+        <a href="{% url 'book-detail' rating_num.id %}"><img src="{{ rating_num.Image_URL_L }}" alt="img" id="img{{rating_num.id}}"></a> 
+      {% endfor %}
+    {% else %}
+      <p>No data.</p>
+    {% endif %}
+  </div>
+  {% endif %} -->
+
+  <div class="container book" {% if page_obj.number == 1 %} style="margin-top: 0" {% endif %}>
+    {% for book in page_obj %}
+    <div class="display">
+      <a href="{% url 'book-detail' book.id %}">
+        <img src="{{ book.Image_URL_L }}" alt="img" id="img{{book.id}}">
+        <div class="img_text">{{book.Book_Title}}: <span class="img_text_author">Author: {{book.Book_Author}}</span></div>
+      </a>
+    </div> 
     {% empty %}
     <p>No data</p>
     {% endfor %}
@@ -24,9 +38,6 @@
 
 {% block script %}
 <script>
-  const book_id = $(this).attr('id');
-  const bookImg = $(`#img${book_id}`);
-  $(`#img${book_id}`).addClass("no_image");
 
 </script>
 {% endblock %}

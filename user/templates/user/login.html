@@ -20,10 +20,10 @@
                         <small class="text-muted ml-2">
                             <a href="{% url 'password_reset' %}">Forgot Password?</a>
                         </small> <hr>
-                        <div>
+                        <div class="login">
                             Login with: <br> <br> 
                                 <a href="{% provider_login_url 'google' %}"><img src="/media/google_icon.png" alt="Google" style="width: 30px; margin-top: -15px; margin-right: 10px;"></a>
-                                <a href="{% provider_login_url 'facebook' method='oauth2'%}"><i class="fab fa-facebook fa-2x"></i></a>
+                                <a href="{% provider_login_url 'facebook' method='js_sdk'%}"><i class="fab fa-facebook fa-2x"></i></a>
                             
                         </div>
                     </div>

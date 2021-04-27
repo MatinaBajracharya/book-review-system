@@ -9,7 +9,8 @@ from django.db.models import Avg
 from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core import serializers
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, Http404
+# import joblib
 
 # Create your views here.
 @permission_required('admin.can_add_log_entry')
@@ -43,11 +44,33 @@ def book_detail_upload(request):
     context = {}
     return render(request, template, context)
 
-class BookListView(ListView):
-    model = BookDetail
-    template = "/browse.html"
-    context_object_name = 'books'
-    paginate_by = 12
+def book_list(request):
+    template = "browse.html"
+    try:
+        books = BookDetail.objects.all()
+        rating_num = Review.objects.filter(rating__gte = 3).order_by('-rating')
+        rating = Review.objects.all()
+        paginator = Paginator(books, 12)  
+        page = request.GET.get('page')
+        page_obj = paginator.page(page)
+    except BookDetail.DoesNotExist:
+        raise Http404("Book does not exist.")
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+    except:
+        raise Http404("Something went wrong.")   
+
+    context={
+        'books': books,
+        'rating': rating,
+        'page': page,
+        'page_obj': page_obj,
+        'rating_num': rating_num,
+    }
+
+    return render(request, template, context)
     
 
 def detail(request, pk):
@@ -57,7 +80,7 @@ def detail(request, pk):
         book = get_object_or_404(BookDetail, pk=pk)
         obj = Review.objects.filter(ISBN = pk).order_by('-date_posted')
         rate_avg = obj.aggregate(Avg('rating')).get('rating__avg')
-        paginator = Paginator(obj, 4)  # 3 posts in each page
+        paginator = Paginator(obj, 4)  # 4 posts in each page
         page = request.GET.get('page')
         page_obj = paginator.page(page)
     except BookDetail.DoesNotExist:
@@ -122,24 +145,15 @@ def searchbook(request):
     }
     return render(request, template, context)
 
-#Pagination
-# def pagination(request):
-#     offset = int(request.POST['offset'])
-#     limit = 2
-#     posts = Post.objects.all()[offset: offset + limit]
-#     totalData = Post.objects.count()
-#     data = {}
-#     post_json = serializers.serialize('json', posts)
-#     return JsonResponse(data = {
-#         'posts': post_json,
-#         'totalResult': totalData,
-#     })
-
 def autosuggestbook(request):
     query_original = request.GET.get('term')
     queryset = Post.objects.filter(Q(Book_Title__icontains=query_original))
     mylist = []
     mylist += [x.title for x in queryset]
     return JsonResponse(mylist, safe=False)
+
+def popular_books(request):
+    popular_books =  {}
+
 
 

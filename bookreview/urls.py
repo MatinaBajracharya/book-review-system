@@ -38,7 +38,7 @@ urlpatterns = [
     path('', include('forum.urls')),
     path('summernote/', include('django_summernote.urls')),
     path('admin/upload-csv/', book_detail_upload, name="book_detail_upload"),
-    # path('account/', include('django.contrib.auth.urls')),
+    # path('accounts/', include('django.contrib.auth.urls')),
     path('', include('book.urls')),
     path('delete-user/<int:pk>', user_views.DeleteProfile, name='delete_user'),
 ]
