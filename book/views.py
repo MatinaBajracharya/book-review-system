@@ -10,7 +10,13 @@ from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core import serializers
 from django.http import JsonResponse, HttpResponse, Http404
-# import joblib
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+# recommendation
+import pandas as pd 
+import numpy as np 
+from surprise import Reader, Dataset
+from surprise import SVD
+import copy
 
 # Create your views here.
 @permission_required('admin.can_add_log_entry')
@@ -40,15 +46,18 @@ def book_detail_upload(request):
                 Image_URL_L = column[7],
             )
         
-
     context = {}
     return render(request, template, context)
 
 def book_list(request):
     template = "browse.html"
+    book_list_df = recommendation(request)
     try:
         books = BookDetail.objects.all()
-        rating_num = Review.objects.filter(rating__gte = 3).order_by('-rating')
+        rating_num = pd.DataFrame(list(Review.objects.filter(rating__gte = 3).values().order_by('-rating')))  
+        rating_num = rating_num.ISBN_id.unique()
+        # print(rating_num)
+        # rating_num = Review.objects.filter(rating__gte = 3).order_by('-rating').values('ISBN').distinct()
         rating = Review.objects.all()
         paginator = Paginator(books, 12)  
         page = request.GET.get('page')
@@ -63,6 +72,7 @@ def book_list(request):
         raise Http404("Something went wrong.")   
 
     context={
+        'pred': book_list_df,
         'books': books,
         'rating': rating,
         'page': page,
@@ -131,7 +141,7 @@ def searchbook(request):
         results = BookDetail.objects.all()
 
     try:
-        paginator = Paginator(results, 8)  # 3 posts in each page
+        paginator = Paginator(results, 8)  
         page = request.GET.get('page')
         page_obj = paginator.page(page)
     except PageNotAnInteger:
@@ -152,8 +162,92 @@ def autosuggestbook(request):
     mylist += [x.title for x in queryset]
     return JsonResponse(mylist, safe=False)
 
-def popular_books(request):
-    popular_books =  {}
+def recommendation(request):
+    current_id = request.user.id
+    ratings = Review.objects.filter(user = current_id)
+    all_ratings = Review.objects.all()
+   
+    data = []
+    ratings_not_zero = []
+    
+    for rate in ratings:
+        user_id = [int(rate.user_id)]
+        book_id = [str(rate.ISBN.ISBN)]
+        rating_id = [int(rate.rating)]
+
+        data.extend(zip(user_id, book_id, rating_id))
+
+    for rate in all_ratings:
+        user_id = [int(rate.user_id)]
+        book_id = [str(rate.ISBN.ISBN)]
+        rating_id = [int(rate.rating)]
+
+        ratings_not_zero.extend(zip(user_id, book_id, rating_id))
+
+    new_df = pd.DataFrame(data,columns=["user_id","id","book_rating"])
+    books = pd.DataFrame(list(BookDetail.objects.all().values()))    
+    ratings_not_zero = pd.DataFrame(ratings_not_zero,columns=["user_id","isbn","book_rating"])
+
+    result = res_to_book(new_df,books)
+
+    model = SVD()
+
+    model1 = trainData(ratings_not_zero, model)
+    pred = recommend(current_id,ratings_not_zero,model1)
+
+    details = []
+    columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
+    list_isbn = pred['isbn'].tolist()
+
+    for i in list_isbn:
+        recommend_book = BookDetail.objects.get(ISBN = i)
+        details.append([recommend_book.id, recommend_book.ISBN, recommend_book.Book_Title,recommend_book.Image_URL_L, recommend_book.Book_Author])
+    book_list_df = pd.DataFrame(details,columns=columns)
+
+    pred_book_rating = res_to_booktoo(pred,books)
+    return book_list_df
+
+def res_to_book(res,books):
+    res_book = list(res['id'].values)
+    books_names = []
+    for i in res_book:
+        books_names.append(books[books.ISBN == i].Book_Title.values[0])
+    return books_names    
+
+def res_to_booktoo(res,books):
+    res_book = list(res['isbn'].values)
+    books_names = []
+    for i in res_book:
+        books_names.append(books[books.ISBN == i].Book_Title.values[0])
+    return books_names
+
+def trainData(df, model):
+    '''
+        df should contain user id, book id and rating column
+    '''
+    model2 = copy.deepcopy(model)
+    reader = Reader(rating_scale=(1, 5))
+    dataset = Dataset.load_from_df(df, reader)
+    data = dataset.build_full_trainset()
+    model = model2.fit(data)
+    return model
+
+def recommend(user,df,model,output_limit=8):
+    user_rated_books = df.loc[df.user_id==user, 'isbn']
+    unique_ids = df.isbn.unique()
+
+    # removing the rated books for the recommendations
+    book_ids_topredict = np.setdiff1d(unique_ids,user_rated_books)
+    print(book_ids_topredict)
+    
+    pred = []
+    for iid in book_ids_topredict:
+        pred.append((iid, model.predict(uid=user,iid=iid).est))
+        
+    pred_df = pd.DataFrame(pred,columns=['isbn','pred_rating'])
+    pred_df.sort_values('pred_rating',ascending=False, inplace=True)
+    
+    return pred_df.head(output_limit)
 
 
 

@@ -1,24 +1,35 @@
 {% extends "forum/base.html" %}
+{% block style %}
+
+<style>
+  h3{
+    font-family: Cinzel Decorative;
+    font-weight: bold;
+  }
+</style>
+
+{% endblock %}
 {% block content %}
 
   <p class="text-center title pt-2">Books</p>
   {% include "forum/search.html" %} <br>
 
-  <!-- {% if page_obj.number == 1 %}
-  <div class="container">
-    <h3 style="padding-top: 50px;">Most Popular Books</h3>
-    {{rating_num.review}} 
-    {% if rating_num >= 3 %}
-      {% for rating_num in rating %}
-        <a href="{% url 'book-detail' rating_num.id %}"><img src="{{ rating_num.Image_URL_L }}" alt="img" id="img{{rating_num.id}}"></a> 
-      {% endfor %}
-    {% else %}
-      <p>No data.</p>
+  <div class="container book" {% if page_obj.number == 1 %} style="margin-top: -1%" {% endif %}>
+    {% if page_obj.number == 1 %}
+    {% if user.is_authenticated %}
+      <h3 style="padding-top: 50px;">Recommended Books</h3><hr>
+      {% for rate in pred.itertuples %}
+        <div class="display">
+          <a href="{% url 'book-detail' rate.id %}">
+            <img src="{{ rate.Image_URL_L }}" alt="img" id="img{{rate.id}}">
+            <div class="img_text">{{rate.Book_Title}}: <span class="img_text_author">Author: {{rate.Book_Author}}</span></div>
+          </a> 
+        </div>
+      {% endfor %} 
     {% endif %}
-  </div>
-  {% endif %} -->
 
-  <div class="container book" {% if page_obj.number == 1 %} style="margin-top: 0" {% endif %}>
+    <h3 style="padding-top: 8%;">All Books</h3><hr>
+    {% endif %}
     {% for book in page_obj %}
     <div class="display">
       <a href="{% url 'book-detail' book.id %}">

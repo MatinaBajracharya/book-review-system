@@ -42,7 +42,6 @@
                     <legend class="border-bottom mb-4">
                         Posts by {{ u_id }}
                     </legend>
-                    {% if post > 1%}
                         {% for post in posts%}
                         <article class="media content-section">
                         <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="">
@@ -67,8 +66,7 @@
                             <p class="article-content">{{ post.content | safe }}</p>
                             </div>
                         </article>
-                        {% endfor %}
-                    {% else %}
+                        {% empty %}
                         <div class="container" style="text-align: center;">
                             <i class="fas fa-edit fa-7x"></i> <br> <br>
                             <p>No posts yet.</p>
@@ -80,7 +78,8 @@
                                 </div>
                             {% endif %}
                         </div>
-                    {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
                 
                 {% if request.user.id == u_id.id %}
