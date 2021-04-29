@@ -1,0 +1,59 @@
+{% extends "forum/base.html" %}
+{% block style %}
+<style>
+legend{
+    font-family: Cinzel Decorative;
+    font-weight: bolder;
+}
+
+.rating{
+    margin-left: 1rem;
+}
+
+.card{
+    cursor: pointer;
+}
+</style>
+
+{% endblock %}
+{% block content %}
+<legend class="text-center">My Ratings</legend> <hr>
+    {% for rate in ratings %} 
+    <div class="card mb-3 mt-5 border-primary" style="max-width: 100%;">
+        <div class="row no-gutters">
+          <div class="col-md-2" style="padding:0;">
+            <img src="{{rate.ISBN.Image_URL_L}}" class="card-img" style="height: 300px; width: 200px;" alt="No preview">
+          </div>
+          <div class="col-md-10">
+            <div class="card-body pl-5">
+              <a href="{% url 'book-detail' rate.ISBN.id %}"><h5 class="card-title" style="font-family: Cinzel Decorative; font-weight: bold; font-size: 25px;"> {{rate.ISBN.Book_Title}}</h5> <br></a>
+                <div class="row key" style="font-family: 'Times New Roman', Times, serif" >
+                    <div class="col-6">
+                        <p class="card-text">ISBN: {{rate.ISBN.ISBN}}</p>
+                        <p class="card-text">Author: {{rate.ISBN.Book_Author}}</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="card-text">Publisher: {{ rate.ISBN.Publisher }}</p>
+                        <p class="card-text">Year of Publication: {{ rate.ISBN.Year_Of_Publication }}</p>
+                    </div>
+                    <p class="rating">Your rating:  </p>
+                    <div class="product-reviews">
+                        <div class="single-review">
+                            <div class="review-heading">
+                                <div class="rate-rating pl-1">
+                                    <i class="fa fa-star {% if rate.rating < 1 %} empty {% endif %}"></i>
+                                    <i class="fa fa-star {% if rate.rating < 2 %} empty {% endif %}"></i>
+                                    <i class="fa fa-star {% if rate.rating < 3 %} empty {% endif %}"></i>
+                                    <i class="fa fa-star {% if rate.rating < 4 %} empty {% endif %}"></i>
+                                    <i class="fa fa-star {% if rate.rating < 5 %} empty {% endif %}"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

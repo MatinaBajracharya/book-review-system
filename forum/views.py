@@ -68,8 +68,6 @@ def like_post(request):
             'likes': post_obj.likes.all().count()
         }
         return JsonResponse(data, safe=False)
-    # return  HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-
 
 class PostListView(ListView):
     model = Post

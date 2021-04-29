@@ -35,26 +35,25 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'sslserver',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
-    'social_django',
-    'django_summernote',
-    'import_export',
-    'forum.apps.ForumConfig',
-    'user.apps.UserConfig',
-    'book.apps.BookConfig',
     'crispy_forms',
+    'bookreview',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'forum.apps.ForumConfig',
+    'user.apps.UserConfig',
+    'book.apps.BookConfig',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.facebook',
+    'django_summernote',
+    'import_export',
 ]
 
 SITE_ID = 1
@@ -80,8 +79,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware', 
+    'django.contrib.auth.middleware.AuthenticationMiddleware', 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -101,9 +99,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -140,27 +135,30 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         }
     },
-    # 'facebook': {
-    #     'METHOD': 'oauth2',
-    #     'SCOPE': ['email', 'public_profile'],
-    #     'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-    #     'INIT_PARAMS': {'cookie': True},
-    #     'FIELDS': [
-    #         'email',
-    #         'first_name',
-    #         'last_name',
-    #     ],
-    #     # 'EXCHANGE_TOKEN': True,
-    #     # 'LOCALE_FUNC': 'path.to.callable',
-    #     # 'VERIFIED_EMAIL': False,
-    #     'VERSION': 'v2.12',
-    # },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'name',
+            'name_format',
+            'picture',
+            'short_name',
+            'email'
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v7.0',
+        'ACCOUNT_EMAIL_REQUIRED': True
+    }
 }
-
-# ACCOUNT_DEFAULT_HTTP_PROTOCOL = ("https")
-# ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = (True)
-# SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-# SECURE_SSL_REDIRECT = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -206,7 +204,7 @@ MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL= '/browse'
+LOGIN_REDIRECT_URL= 'browse'
 LOGIN_URL = 'login'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

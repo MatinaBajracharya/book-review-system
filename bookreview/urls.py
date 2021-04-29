@@ -21,10 +21,17 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from book.views import *
+from allauth.account.views import LoginView
+
+class MyLoginView(LoginView):
+    template_name = 'user/login.html'
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^accounts/', include('allauth.urls')),
+    path('accounts/', include('allauth.urls')),
+    url(r'^accounts/login', MyLoginView.as_view(), name='account_login'),
+    url(r'^accounts/signup', user_views.register, name='account_signup'),
     path('register/', user_views.register, name='register'),
     path('password_change/', auth_views.PasswordChangeView.as_view(template_name='user/changepassword.html'), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='user/passwordchanged.html'), name='password_change_done'),
@@ -38,7 +45,6 @@ urlpatterns = [
     path('', include('forum.urls')),
     path('summernote/', include('django_summernote.urls')),
     path('admin/upload-csv/', book_detail_upload, name="book_detail_upload"),
-    # path('accounts/', include('django.contrib.auth.urls')),
     path('', include('book.urls')),
     path('delete-user/<int:pk>', user_views.DeleteProfile, name='delete_user'),
 ]

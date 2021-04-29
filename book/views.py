@@ -51,13 +51,14 @@ def book_detail_upload(request):
 
 def book_list(request):
     template = "browse.html"
-    book_list_df = recommendation(request)
+    if(request.user.is_authenticated):
+        book_list_df = recommendation(request)
+    else:
+        columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
+        book_list_df = pd.DataFrame(columns = columns)
+    populars = popular_books(request, 3)
     try:
         books = BookDetail.objects.all()
-        rating_num = pd.DataFrame(list(Review.objects.filter(rating__gte = 3).values().order_by('-rating')))  
-        rating_num = rating_num.ISBN_id.unique()
-        # print(rating_num)
-        # rating_num = Review.objects.filter(rating__gte = 3).order_by('-rating').values('ISBN').distinct()
         rating = Review.objects.all()
         paginator = Paginator(books, 12)  
         page = request.GET.get('page')
@@ -73,15 +74,28 @@ def book_list(request):
 
     context={
         'pred': book_list_df,
+        'populars': populars,
         'books': books,
         'rating': rating,
         'page': page,
         'page_obj': page_obj,
-        'rating_num': rating_num,
     }
 
     return render(request, template, context)
     
+def popular_books(request, items):
+    rating_num = pd.DataFrame(list(Review.objects.filter(rating__gte = 3).values().order_by('-rating')))
+    rating_num = rating_num.drop_duplicates(subset = 'ISBN_id', keep = "first")
+    rating_num = rating_num.head(items)
+    details = []
+    columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
+    popular_isbn = rating_num['ISBN_id'].tolist()
+    for i in popular_isbn:
+        popular_book = BookDetail.objects.get(id = i)
+        details.append([popular_book.id, popular_book.ISBN, popular_book.Book_Title,popular_book.Image_URL_L, popular_book.Book_Author])
+    book_list_df = pd.DataFrame(details,columns=columns)
+    return book_list_df
+
 
 def detail(request, pk):
     try:
@@ -238,7 +252,6 @@ def recommend(user,df,model,output_limit=8):
 
     # removing the rated books for the recommendations
     book_ids_topredict = np.setdiff1d(unique_ids,user_rated_books)
-    print(book_ids_topredict)
     
     pred = []
     for iid in book_ids_topredict:
@@ -249,5 +262,15 @@ def recommend(user,df,model,output_limit=8):
     
     return pred_df.head(output_limit)
 
+def history(request):
+    template = "history.html"
+    current_id = request.user.id
+    ratings = Review.objects.filter(user = current_id)
+
+    context = {
+        'ratings': ratings,
+    }
+    
+    return render(request, template, context)
 
 
