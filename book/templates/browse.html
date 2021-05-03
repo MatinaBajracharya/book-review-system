@@ -16,7 +16,9 @@
 
   <div class="container book" {% if page_obj.number == 1 %} style="margin-top: -1%" {% endif %}>
     {% if page_obj.number == 1 %}
-    <h3 style="padding-top: 8%;">Our top 3 books</h3><hr>
+    {% if pop_leng != 0 %}
+      <h3 style="padding-top: 8%;">Our top 3 books</h3><hr>
+    {% endif %}
       {% for popular in populars.itertuples %}
         <div class="display">
           <a href="{% url 'book-detail' popular.id %}">
@@ -24,8 +26,10 @@
             <div class="img_text">{{popular.Book_Title}}: <span class="img_text_author">Author: {{popular.Book_Author}}</span></div>
           </a> 
         </div>
-      {% endfor %} 
+      {% endfor %}
+      {% if rec_leng != 0 %}
       <h3 style="padding-top: 50px;">Recommended Books</h3><hr>
+      {% endif %}
       {% for rate in pred.itertuples %}
         <div class="display">
           <a href="{% url 'book-detail' rate.id %}">
@@ -55,6 +59,11 @@
 
 {% block script %}
 <script>
-
+    var url = my_image_element.src;
+    var img = new Image;
+    img.onload = function() {
+        console.log("Intrinsic size: "+ img.width +"x"+ img.height);
+    };
+    img.src = url;
 </script>
 {% endblock %}

@@ -14,7 +14,6 @@
     margin-left: 15px;
   }
   .comment-text{
-    /* text-align: center; */
     background: whitesmoke;
     margin-right: 15px;
     padding: 0px;
@@ -59,10 +58,9 @@
               <small class="text-muted">{{ post.date_posted|date:"F d, Y"}}</small>
             </div>
             <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content | safe }}</p>
+            <p class="article-content text">{{ post.content | safe | truncatewords:"300"  }}</p>
             <div class="like-count{{ post.id }} float-left" style="font-family: Arial, Helvetica, sans-serif;"><i class="fas fa-heart" style="color: red;"></i> {{ post.likes.all.count }} Likes</div>
-            <strong class="float-right mt-0" style="font-family: Arial, Helvetica, sans-serif;">{{ comment.all.count }} <i class="far fa-comment fa-flip-horizontal ml-3"></i> Comments</strong>
-            <div class="clearfix"></div>
+            <div style="font-family: Arial, Helvetica, sans-serif;"><i class="far fa-comment fa-flip-horizontal ml-3"></i> {{ post.comments.all.count }} Comments</div>
             {% if user.is_authenticated %}
             <hr class="mt-0">
               <div class="row">

@@ -2,14 +2,13 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
-# from django_summernote.widgets import SummernoteWidget, SummernoteInplaceWidget
 
 # Create your models here.
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(User, on_delete=models.CASCADE) #If user is deleted it deletes the post too
+    author = models.ForeignKey(User, on_delete=models.CASCADE) 
     likes = models.ManyToManyField(User, default= None, blank=True, related_name='liked')
     comments = models.ManyToManyField(User, default= None, blank=True, related_name='commented')
 
@@ -46,6 +45,9 @@ class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     time = models.DateTimeField(default=timezone.now)
     comment = models.TextField(blank=False)
+
+    def __str__(self):
+        return str(self.post)
 
 class SubComment(models.Model):
     post = models.ForeignKey(Post, on_delete = models.CASCADE)

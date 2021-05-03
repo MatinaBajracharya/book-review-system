@@ -1,5 +1,12 @@
 
 {% load static %}
+{% block style %}
+<style>
+.display-2{
+    font-family: Cinzel Decorative;
+}
+</style>
+{% endblock %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,6 +14,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Books</title>
+    <link rel="shortcut icon" type="image/jpg" href="{% static 'forum/images/download.png' %}"/>
     <!-- CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
 	<link href="{% static 'forum/style.css' %}" rel="stylesheet">
@@ -60,7 +68,7 @@
         </a>
       </div>
     <!-- Share SECTION  -->
-    <section class="share" id="share" class="bg-light py-5">
+    <section class="bg-light py-5 share lazy" id="share">
         <div class="container">
             <div class="row welcome text-center">
                 <div class="col-12">
@@ -68,10 +76,10 @@
                 </div>
             </div><hr>
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-6 slide-in">
                     <img src="{% static 'forum/images/share.jpg' %}" alt="" class="img-fluid mb-3 rounded-circle">
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 slide-in">
                     <h3>Share What You Create</h3>
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae at vel molestias deserunt eos quae, atque pariatur porro, ducimus consectetur quo! Iste, eum quo voluptas explicabo magnam esse aut non.</p>
                     <div class="d-flex flex-row">
@@ -96,7 +104,7 @@
     </section>
 
 	<!--- Services Section -->
-    <div id="services" class="container-fluid padding">
+    <div id="services" class="container-fluid padding lazy">
         <div class="row welcome text-center">
             <div class="col-12">
                 <h1 class="display-4">Built with ease.</h1>
@@ -110,7 +118,7 @@
         </div>
     </div>
 	<!--- Three Column Section -->
-    <div class="container-fluid text-center">
+    <div class="container-fluid text-center lazy">
         <div class="numbers d-flex flex-md-row flex-wrap justify-content-center">
             <div class="rect">
                 <h1 id="numcounterup">23</h1>
@@ -128,7 +136,7 @@
     </div>
 
     <!---Testimonials -->
-    <div id="testimony" class="container-fluid padding">
+    <div id="testimony" class="container-fluid padding lazy">
         <div class="row welcome text-center">
             <div class="col-12">
                 <h1 class="display-4">TESTIMONIALS</h1>
@@ -136,12 +144,12 @@
             <hr>
             <div class="col-12">
                 <div class="row offset-1">
-                    <div class="col-md-5 testimonials">
+                    <div class="col-md-5 testimonials slide-in">
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, saepe!</p>
                         <img src="{% static 'forum/images/user1.jpg' %}">
                         <p class="user-details"><b>Agelina</b><br> Co-founder at xyz</p>
                     </div>
-                    <div class="col-md-5 testimonials">
+                    <div class="col-md-5 testimonials slide-in">
                         <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ex, cupiditate!</p>
                         <img src="{% static 'forum/images/user2.jpg' %}">
                         <p class="user-details"><b>John Doe</b><br> Director at xyz</p>
@@ -152,7 +160,7 @@
     </div>
 
 	<!--- Connect -->
-    <div id="connect" class="container-fluid connect padding">
+    <div id="connect" class="container-fluid connect padding lazy">
         <div class="row welcome text-center padding">
             <div class="col-12">
                 <h2 class="display-4">Connect</h2>
@@ -194,6 +202,7 @@
         </section>   
 
         <!-- Scripts -->
+        <script src="{% static 'forum/js/lazy-loader.js' %}"></script>
         <script src="{% static 'forum/js/smooth-scroll.js' %}"></script>
         <script src="{% static 'forum/js/main.js' %}"></script>
         <script>

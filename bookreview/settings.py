@@ -143,6 +143,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'INIT_PARAMS': {'cookie': True},
         'FIELDS': [
             'id',
+            'email',
             'first_name',
             'last_name',
             'middle_name',
@@ -150,13 +151,11 @@ SOCIALACCOUNT_PROVIDERS = {
             'name_format',
             'picture',
             'short_name',
-            'email'
         ],
         'EXCHANGE_TOKEN': True,
         'LOCALE_FUNC': 'path.to.callable',
         'VERIFIED_EMAIL': False,
         'VERSION': 'v7.0',
-        'ACCOUNT_EMAIL_REQUIRED': True
     }
 }
 

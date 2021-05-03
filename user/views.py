@@ -33,7 +33,7 @@ def DeleteProfile(request, pk):
         if p_id == u_id:
             profile_uid.delete()
             logout(request)
-            messages.success(request, f'User has been deleted')
+            messages.success(request, f'User has been deleted.')
             return redirect('register')
     else:
         messages.error(request, f'You are not authorized to delete users!')

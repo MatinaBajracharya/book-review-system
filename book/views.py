@@ -10,7 +10,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.core import serializers
 from django.http import JsonResponse, HttpResponse, Http404
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 # recommendation
 import pandas as pd 
 import numpy as np 
@@ -56,8 +56,10 @@ def book_list(request):
     else:
         columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
         book_list_df = pd.DataFrame(columns = columns)
-    populars = popular_books(request, 3)
     try:
+        populars = popular_books(request, 3)
+        pop_length = len(populars.index)
+        rec_length = len(book_list_df.index)
         books = BookDetail.objects.all()
         rating = Review.objects.all()
         paginator = Paginator(books, 12)  
@@ -74,6 +76,8 @@ def book_list(request):
 
     context={
         'pred': book_list_df,
+        'pop_leng': pop_length,
+        'rec_leng': rec_length,
         'populars': populars,
         'books': books,
         'rating': rating,
@@ -84,17 +88,32 @@ def book_list(request):
     return render(request, template, context)
     
 def popular_books(request, items):
-    rating_num = pd.DataFrame(list(Review.objects.filter(rating__gte = 3).values().order_by('-rating')))
-    rating_num = rating_num.drop_duplicates(subset = 'ISBN_id', keep = "first")
-    rating_num = rating_num.head(items)
-    details = []
-    columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
-    popular_isbn = rating_num['ISBN_id'].tolist()
-    for i in popular_isbn:
-        popular_book = BookDetail.objects.get(id = i)
-        details.append([popular_book.id, popular_book.ISBN, popular_book.Book_Title,popular_book.Image_URL_L, popular_book.Book_Author])
-    book_list_df = pd.DataFrame(details,columns=columns)
-    return book_list_df
+    # rating_num = pd.DataFrame(list(Review.objects.filter(rating__gte = 3).values().order_by('-rating')))
+    # rating_num = rating_num.drop_duplicates(subset = 'ISBN_id', keep = "first")
+    # rating_num = rating_num.head(items)
+    # details = []
+    # columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
+    # popular_isbn = rating_num['ISBN_id'].tolist()
+    # for i in popular_isbn:
+    #     popular_book = BookDetail.objects.get(id = i)
+    #     details.append([popular_book.id, popular_book.ISBN, popular_book.Book_Title,popular_book.Image_URL_L, popular_book.Book_Author])
+    # book_list_df = pd.DataFrame(details,columns=columns)
+    # return book_list_df
+    try:
+        rating_num = pd.DataFrame(list(Review.objects.filter(rating__gte = 3).values().order_by('-rating')))
+        rating_num = rating_num.drop_duplicates(subset = 'ISBN_id', keep = "first")
+        rating_num = rating_num.head(items)
+        details = []
+        columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
+        popular_isbn = rating_num['ISBN_id'].tolist()
+        for i in popular_isbn:
+            popular_book = BookDetail.objects.get(id = i)
+            details.append([popular_book.id, popular_book.ISBN, popular_book.Book_Title,popular_book.Image_URL_L, popular_book.Book_Author])
+        book_list_df = pd.DataFrame(details,columns=columns)
+        return book_list_df
+    except:
+        book_list_df = pd.DataFrame(columns=columns)
+        return book_list_df
 
 
 def detail(request, pk):
@@ -262,6 +281,7 @@ def recommend(user,df,model,output_limit=8):
     
     return pred_df.head(output_limit)
 
+@login_required
 def history(request):
     template = "history.html"
     current_id = request.user.id

@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative&display=swap');
+
 html, body{
   /* height: 100%;
   width: 100%; */
@@ -248,7 +250,14 @@ figure {
     padding: 1rem;
 }
 
+.lazy {
+  opacity: 0;
+  transition: opacity 250ms ease-in;
+}
 
+.lazy.appear {
+  opacity: 1;
+}
 
 
 

@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import PostForm
 from django.http import JsonResponse
-
+from django.db.models import Count
 # Create your views here.
 
 def home(request):
@@ -65,11 +65,12 @@ def like_post(request):
 
         data = {
             'value': like.value,
-            'likes': post_obj.likes.all().count()
+            # 'likes': post_obj.likes.all().count()
         }
         return JsonResponse(data, safe=False)
 
 class PostListView(ListView):
+    queryset = Post.objects.select_related().annotate(comment_count=Count('comments'))
     model = Post
     template_name = 'forum/forum.html'
     context_object_name = 'posts'

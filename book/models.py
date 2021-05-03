@@ -20,7 +20,7 @@ class Review(models.Model):
     ISBN = models.ForeignKey(BookDetail, on_delete=models.CASCADE)
     rating = models.IntegerField(default = 1)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
-    review = models.CharField(max_length=100)
+    review = models.CharField(max_length=500)
     date_posted = models.DateTimeField(default=timezone.now)
 
     def __str__(self):

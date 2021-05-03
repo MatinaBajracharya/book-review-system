@@ -13,6 +13,10 @@ legend{
 .card{
     cursor: pointer;
 }
+
+.message{
+    font-size: large;
+}
 </style>
 
 {% endblock %}
@@ -54,6 +58,11 @@ legend{
             </div>
           </div>
         </div>
+    </div>
+    {% empty %}
+    <div class="text-center" style="margin-top: 10%;">
+        <img src="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcdn.appletips.nl%2Fwp-content%2Fuploads%2F2015%2F07%2Floadingapp.png&f=1&nofb=1" alt="" class="mx-auto d-block" style="height: 10%; width: 10%;">
+        <p class="mt-5 message">It seems like you have not rated anything yet.</p>
     </div>
     {% endfor %}
 {% endblock %}
