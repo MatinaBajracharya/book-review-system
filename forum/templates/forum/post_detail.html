@@ -62,7 +62,7 @@
                   <button type="submit" value="unlike" class="like-btn{{ object.id }} btn-down"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
                   {% endif %}
                 </form>
-                <i class="far fa-comment fa-flip-horizontal ml-3" id="comment-icon" style="cursor: pointer;"></i>
+                <i class="far fa-comment fa-flip-horizontal ml-3" id="comment-icon" style="cursor: pointer;"></i> <div class="comment-count{{object.id}}" style="display: inline;">{{ comments | length }} Comments</div>
               </div>
               {% endif %}
               <div class="like-count{{ object.id }}">{{ object.likes.all.count }} Likes</div>
@@ -70,6 +70,10 @@
               {% if user.is_authenticated %}
                 {% for c in comments %}
                   <img class="rounded-circle article-img" src="{{ c.0.user.profile.image.url }}" alt="">
+                  <form action="{% url 'delete-com' c.0.id object.id %}" method="POST" class="float-right">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-down"><i class="fas fa-trash" style="color: red;"></i></button>
+                  </form>
                   <p class="user card-text"><strong>{{ c.0.user.username }}</strong> {{c.0.comment}} <br> <small>{{ c.0.time }}</small></p>
                   <p id="{{ c.0.id }}"><button onclick="ReplyForm('{{ c.0.id }}')" class="reply">Reply</button></p>
                     {% for subc in c.1 %}
@@ -83,7 +87,7 @@
                 <hr class="com-wrap">
                 <div class="comment-form-wrap">
                   <h4>Leave a comment</h4>
-                  <form method="POST" class="p-3 bg-light com-form" action="{% url 'post-detail' object.id %}">
+                  <form method="POST" class="p-3 bg-light com-form" id="{{object.id}}" action="{% url 'post-detail' object.id %}">
                     {% csrf_token %}
                     <div class="form-group">
                       <img class="rounded-circle article-img" src="{{ request.user.profile.image.url }}">
@@ -177,7 +181,6 @@
     $(document).ready(function() {
       $(`#comment-icon`).click(function() {
         $('#message').focus();
-        console.log("uhtue");
       });
       
       //Comment
@@ -186,6 +189,10 @@
         var uName = `{{request.user.username}}`;
         var uImage = `{{request.user.profile.image.url}}`;
         const comPost = $("#message").val();
+        const post_id = $(this).attr('id')
+        let res;
+        const comm = $(`.comment-count${post_id}`).text()
+        const trimCount = parseInt(comm)
         $.ajax({
             type: 'POST',
             url: "{% url 'post-detail' object.id %}",
@@ -195,8 +202,10 @@
                 if (data.msg == 'Success'){
                     $('textarea').val('');
                     $('.com-wrap').before(
-                        "<img class='rounded-circle article-img' src='"+ uImage +"'><p class='user card-text'><strong>"+ uName +"</strong> " + comPost + " <br> <small>"+ _datetime +"</small></p>"
+                        "<img class='rounded-circle article-img' src='"+ uImage +"'><button type='submit' class='btn-down float-right'><i class='fas fa-trash' style='color: red;'></i></button><p class='user card-text'><strong>"+ uName +"</strong> " + comPost + " <br> <small>"+ _datetime +"</small></p>"
                     );
+                    res = trimCount + 1
+                    $(`.comment-count${post_id}`).html(res + " Comments")
                 }
             }
           });

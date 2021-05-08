@@ -88,20 +88,12 @@ def book_list(request):
     return render(request, template, context)
     
 def popular_books(request, items):
-    # rating_num = pd.DataFrame(list(Review.objects.filter(rating__gte = 3).values().order_by('-rating')))
-    # rating_num = rating_num.drop_duplicates(subset = 'ISBN_id', keep = "first")
-    # rating_num = rating_num.head(items)
-    # details = []
-    # columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
-    # popular_isbn = rating_num['ISBN_id'].tolist()
-    # for i in popular_isbn:
-    #     popular_book = BookDetail.objects.get(id = i)
-    #     details.append([popular_book.id, popular_book.ISBN, popular_book.Book_Title,popular_book.Image_URL_L, popular_book.Book_Author])
-    # book_list_df = pd.DataFrame(details,columns=columns)
-    # return book_list_df
     try:
-        rating_num = pd.DataFrame(list(Review.objects.filter(rating__gte = 3).values().order_by('-rating')))
-        rating_num = rating_num.drop_duplicates(subset = 'ISBN_id', keep = "first")
+        rating_num = pd.DataFrame(list(Review.objects.filter().values().order_by('-ISBN_id')))
+        rating_num = rating_num.drop(['id', 'user_id', 'review', 'date_posted'], axis=1)
+        rating_num = rating_num[rating_num.duplicated('ISBN_id') | rating_num.duplicated('ISBN_id', keep='last')]
+        rating_num = rating_num.groupby(['ISBN_id'])['rating'].mean().reset_index()
+        rating_num = rating_num.sort_values('rating', ascending=False)
         rating_num = rating_num.head(items)
         details = []
         columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
@@ -123,7 +115,7 @@ def detail(request, pk):
         book = get_object_or_404(BookDetail, pk=pk)
         obj = Review.objects.filter(ISBN = pk).order_by('-date_posted')
         rate_avg = obj.aggregate(Avg('rating')).get('rating__avg')
-        paginator = Paginator(obj, 4)  # 4 posts in each page
+        paginator = Paginator(obj, 1)  # 4 review in each page
         page = request.GET.get('page')
         page_obj = paginator.page(page)
     except BookDetail.DoesNotExist:
@@ -138,7 +130,7 @@ def detail(request, pk):
         raise Http404("Something went wrong.")
 
     try:
-        avg_rating = math.floor(rate_avg*10)/10
+        avg_rating = rate_avg
     except:
         avg_rating = 0
 
@@ -157,6 +149,7 @@ def detail(request, pk):
         messages.success(request, "Your review has been sent. Thank you for your interest.")
 
     context = {
+        'obj': obj,
         'book' : book,
         'form': form,
         'avg_rating': avg_rating,
@@ -169,7 +162,7 @@ def searchbook(request):
     template = 'search_result.html'
     query = request.GET.get('q')
     if query:
-        results = BookDetail.objects.filter(Q(Book_Title__icontains=query) | Q(Book_Author__icontains=query))
+        results = BookDetail.objects.filter(Q(Book_Title__icontains=query) | Q(Book_Author__icontains=query) |Q(ISBN__icontains=query) )
     else:
         results = BookDetail.objects.all()
 
@@ -265,7 +258,7 @@ def trainData(df, model):
     model = model2.fit(data)
     return model
 
-def recommend(user,df,model,output_limit=8):
+def recommend(user,df,model,output_limit=4):
     user_rated_books = df.loc[df.user_id==user, 'isbn']
     unique_ids = df.isbn.unique()
 

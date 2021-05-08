@@ -21,19 +21,21 @@
         </div>
         <div class="col-6">
             <p class="heading">{{ book.Book_Title }}</p>
-                <i class="fa fa-star {% if avg_rating < 1 %} empty {% endif %} fa-2x"></i>
-                <i class="fa fa-star {% if avg_rating < 2 %} empty {% if avg_rating > 1.3 %} half {% endif %}{% endif %} fa-2x"></i>
-                <i class="fa fa-star {% if avg_rating < 3 %} empty {% if avg_rating > 2.2 %} half {% endif %}{% endif %} fa-2x"></i>
-                <i class="fa fa-star {% if avg_rating < 4 %} empty {% if avg_rating > 3.3 %} half {% endif %}{% endif %} fa-2x"></i>
-                <i class="fa fa-star {% if avg_rating < 5 %} empty {% if avg_rating > 4.3 %} half {% endif %}{% endif %} fa-2x"></i>
+            <div class="avg-rating-stars">
+                <i class="fa fa-star {% if avg_rating < 1 or avg_rating == null %} empty {% endif %} fa-2x"></i>
+                <i class="fa fa-star {% if avg_rating < 2 or avg_rating == null %} empty {% if avg_rating > 1.3 %} half {% endif %}{% endif %} fa-2x"></i>
+                <i class="fa fa-star {% if avg_rating < 3 or avg_rating == null %} empty {% if avg_rating > 2.2 %} half {% endif %}{% endif %} fa-2x"></i>
+                <i class="fa fa-star {% if avg_rating < 4 or avg_rating == null %} empty {% if avg_rating > 3.3 %} half {% endif %}{% endif %} fa-2x"></i>
+                <i class="fa fa-star {% if avg_rating < 5 or avg_rating == null %} empty {% if avg_rating > 4.3 %} half {% endif %}{% endif %} fa-2x"></i>
                 <!-- <div class="half"><i class="fa fa-star fa-2x"></i></div> -->
+            </div>
             <br> <br>
             <div id="confirm-box"></div>
             <div class="row detail">
                 <div class="col-6">
                     <p class="key">ISBN:  {{ book.ISBN }}</p>
                     <p class="key">Author:  {{ book.Book_Author }}</p>
-                    <p class="key">Rating: {% if avg_rating == null %}0{% else %}{{ avg_rating }}{% endif %}</p>
+                    <p class="key">Rating: <span class="avg-rating">{% if avg_rating == null %}0{% else %}{{ avg_rating | floatformat:1 }}{% endif %}</span></p>
                 </div>
                 <div class="col-6">
                     <p class="key">Year of Publication:  {{ book.Year_Of_Publication }}</p>
@@ -51,7 +53,7 @@
         <!-- <div class="card">
             <div class="card-body" style="text-align: center;"> -->
                 <div class="text-muted">Overall customer satisfaction</div> <br>
-                <p class="rating-num">{% if avg_rating == null %}0{% else %}{{ avg_rating }}{% endif %}<strong style="color: grey;">/5</strong></p>
+                <p class="rating-num"><span class="avg-rating">{% if avg_rating == null %}0{% else %}{{ avg_rating | floatformat:1 }}{% endif %}</span><strong style="color: grey;">/5</strong></p>
             <!-- </div>
           </div> -->
     </div>
@@ -88,35 +90,68 @@
 </div><hr>
 <fieldset>
     <legend class="review-start"><h4 class="review-title">Reviews</h4></legend>
-        {% for review in page_obj %}
-            <div class="product-reviews">
-                <div class="single-review">
-                    <div class="review-heading">
-                        <div><a href="#"><i class="fa fa-user"></i> @{{ review.user.username }}</a> </div>
-                        <div><a href="#"><i class="fa fa-clock"></i> {{ review.date_posted }}</a></div>
-                        <div class="review-rating pull-right">
-                            <i class="fa fa-star {% if review.rating < 1 %} empty {% endif %}"></i>
-                            <i class="fa fa-star {% if review.rating < 2 %} empty {% endif %}"></i>
-                            <i class="fa fa-star {% if review.rating < 3 %} empty {% endif %}"></i>
-                            <i class="fa fa-star {% if review.rating < 4 %} empty {% endif %}"></i>
-                            <i class="fa fa-star {% if review.rating < 5 %} empty {% endif %}"></i>
+        <div id="start-review">
+            {% for review in page_obj %}
+                <div class="product-reviews">
+                    <div class="single-review">
+                        <div class="review-heading">
+                            <div><a href="#"><i class="fa fa-user"></i> @{{ review.user.username }}</a> </div>
+                            <div><a href="#"><i class="fa fa-clock"></i> {{ review.date_posted }}</a></div>
+                            <div class="review-rating pull-right">
+                                <i class="fa fa-star {% if review.rating < 1 %} empty {% endif %}"></i>
+                                <i class="fa fa-star {% if review.rating < 2 %} empty {% endif %}"></i>
+                                <i class="fa fa-star {% if review.rating < 3 %} empty {% endif %}"></i>
+                                <i class="fa fa-star {% if review.rating < 4 %} empty {% endif %}"></i>
+                                <i class="fa fa-star {% if review.rating < 5 %} empty {% endif %}"></i>
+                            </div>
+                        </div>
+                        <div class="review-body">
+                            <p>{{ review.review }}</p>
                         </div>
                     </div>
-                    <div class="review-body">
-                        <p>{{ review.review }}</p>
-                    </div>
                 </div>
-            </div>
-            {% empty %}
-            <p class="review-title text-center mt-5">No reviews yet!</p>
-        {% endfor %}
+                {% empty %}
+                <p class="review-title text-center mt-5 no-review">No reviews yet!</p>
+            {% endfor %}
+        </div>
         <div class="mx-auto">
             {% include "forum/pagination.html" %}
         </div>
 </fieldset>
 {% endblock %}
 
-{% block script %} 
+{% block script %}
+
+    <script type="text/javascript">
+        function review_pagination(){
+            $('#pagination a.link-page').each((index, el) => {
+            $(el).click((e) => {
+                e.preventDefault()
+                let page_url = $(el).attr('href')
+                $.ajax({
+                url: page_url,
+                type: "GET",
+                success: (data) => {
+                    $('#start-review').empty()
+                    $('#start-review').append($(data).find('#start-review').html())
+                    $('#pagination').empty()
+                    $('#pagination').append($(data).find('#pagination').html())
+                }
+                })
+            })
+            })
+        }
+
+        $(document).ready(function() {
+            review_pagination()
+        })
+
+        $(document).ajaxStop(function() {
+            review_pagination()
+        })
+        
+    </script>
+
     <script>
         var dt = new Date();
         function addZero(i) {
@@ -151,11 +186,16 @@
         
         function submitHandler(e){
             e.preventDefault();
-            
+            if(`{{avg_rating}}` == "None"){
+                var total_rating = 0;
+                var num_rating = 1;
+            } else {
+                var total_rating = parseFloat(`{{avg_rating}}`) * parseInt(`{{obj.count}}`);
+                var num_rating = parseInt(`{{obj.count}}`) + 1;
+            }
             var uName = `{{request.user.username}}`;
             const reviewPost = $("#reviewPost").val();
             const reviewStar = $(".rateStar:checked").val();
-
             $.ajax({
                 type: 'POST',
                 url: "{% url 'book-detail' book.id %}",
@@ -164,25 +204,54 @@
                 success: function(data){
                     if (data.msg == 'Success'){
                         form.reset();
+                        $('.no-review').remove();
+                        
+                        var new_total_rating = parseFloat(total_rating) + parseFloat(reviewStar);
+                        var new_avg_rating = new_total_rating/parseInt(num_rating);
+                        
+                        $('.avg-rating').replaceWith(new_avg_rating.toFixed(1))
+                        
+                        if (new_avg_rating < 1.5){
+                            $('.avg-rating-stars').replaceWith(
+                            "<i class='fa fa-star fa-2x'></i> <i class='fa fa-star empty fa-2x'></i> <i class='fa fa-star empty fa-2x'></i> <i class='fa fa-star empty fa-2x'></i> <i class='fa fa-star empty fa-2x'></i>"
+                        );
+                        } else if (new_avg_rating < 2.5 && new_avg_rating > 1.6){
+                            $('.avg-rating-stars').replaceWith(
+                            "<i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star empty fa-2x'></i> <i class='fa fa-star empty fa-2x'></i> <i class='fa fa-star empty fa-2x'></i>"
+                        );
+                        } else if (new_avg_rating < 3.5 && new_avg_rating > 2.6){
+                            $('.avg-rating-stars').replaceWith(
+                            "<i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star empty fa-2x'></i> <i class='fa fa-star empty fa-2x'></i>"
+                        );
+                        } else if (new_avg_rating < 4.5 && new_avg_rating > 3.6){
+                            $('.avg-rating-stars').replaceWith(
+                            "<i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star empty fa-2x'></i>"
+                        );
+                        }  else if (new_avg_rating > 4.6 ){
+                            $('.avg-rating-stars').replaceWith(
+                            "<i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i> <i class='fa fa-star fa-2x'></i>"
+                            );
+                        }
+
                         if(reviewStar == 1){
                             $('.review-start').after(
-                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i> <i class='fa fa-star empty'></i> <i class='fa fa-star empty'></i> <i class='fa fa-star empty'></i> <i class='fa fa-star empty'></i> </div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
                             );
-                        }else if(reviewStar == 2){
+                        } else if(reviewStar == 2){
                             $('.review-start').after(
-                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star empty'></i> <i class='fa fa-star empty'></i> <i class='fa fa-star empty'></i> </div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
                             );
-                        }else if(reviewStar == 3){
+                        } else if(reviewStar == 3){
                             $('.review-start').after(
-                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star empty'></i><i class='fa fa-star empty'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star empty'></i> <i class='fa fa-star empty'></i> </div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
                             );
-                        }else if(reviewStar == 4){
+                        } else if(reviewStar == 4){
                             $('.review-start').after(
-                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star empty'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star empty'></i> </div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
                             );
                         } else if(reviewStar == 5){
                             $('.review-start').after(
-                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i><i class='fa fa-star'></i></div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
+                                "<div class='product-reviews'><div class='single-review'><div class='review-heading'><div><a href='#'><i class='fa fa-user'></i> @"+uName + "</a> </div><div><a href='#'><i class='fa fa-clock'></i>" + _datetime + "</a></div><div class='review-rating pull-right'><i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i> <i class='fa fa-star'></i> </div></div><div class='review-body'><p>"+ reviewPost +"</p></div></div></div>"
                             );
                         }
                     }

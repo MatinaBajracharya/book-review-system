@@ -1,25 +1,25 @@
 <div class="col-md-6 offset-4" id="pagination">
   {% if page_obj.has_next or page_obj.has_previous %}
     {% if page_obj.has_previous %}
-      <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-      <a class="btn btn-outline-info mb-4" href="?page= {{ page_obj.previous_page_number }}"><i class="fas fa-angle-left"></i></a>
+      <a class="btn btn-outline-info mb-4 link-page" href="?page=1">First</a>
+      <a class="btn btn-outline-info mb-4 link-page" href="?page= {{ page_obj.previous_page_number }}"><i class="fas fa-angle-left"></i></a>
     {% else %}
-      <a class="btn btn-outline-secondary disabled mb-4" href="#">First</a>
-      <a class="btn btn-outline-secondary disabled mb-4" href="#"><i class="fas fa-angle-left"></i></a>
+      <a class="btn btn-outline-secondary disabled mb-4 link-page" href="#">First</a>
+      <a class="btn btn-outline-secondary disabled mb-4 link-page" href="#"><i class="fas fa-angle-left"></i></a>
     {% endif %} 
     {% for num in page_obj.paginator.page_range %} 
       {% if page_obj.number == num %}
-        <a href="?page={{ num }}" class="btn btn-info mb-4">{{ num }}</a>
+        <a href="?page={{ num }}" class="btn btn-info mb-4 link-page">{{ num }}</a>
       {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-        <a href="?page={{ num }}" class="btn btn-outline-info mb-4">{{ num }}</a>
+        <a href="?page={{ num }}" class="btn btn-outline-info mb-4 link-page">{{ num }}</a>
       {% endif %} 
     {% endfor %} 
     {% if page_obj.has_next %}
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}"><i class="fas fa-chevron-right"></i></a>
-      <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+      <a class="btn btn-outline-info mb-4 link-page" href="?page={{ page_obj.next_page_number }}"><i class="fas fa-chevron-right"></i></a>
+      <a class="btn btn-outline-info mb-4 link-page" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
     {% else %}
-      <a class="btn btn-outline-secondary disabled mb-4" href="#"><i class="fas fa-chevron-right"></i></a>
-      <a class="btn btn-outline-secondary disabled mb-4" href="#">Last</a>
+      <a class="btn btn-outline-secondary disabled mb-4 link-page" href="#"><i class="fas fa-chevron-right"></i></a>
+      <a class="btn btn-outline-secondary disabled mb-4 link-page" href="#">Last</a>
     {% endif %}
   {% endif %}
 </div>

@@ -8,6 +8,5 @@ urlpatterns=[
     path('browse/<int:pk>/', detail, name='book-detail'),
     path('history/', history, name='history'),
     url(r'^books/$', searchbook, name="searchbook"),
-    # path('paginate/', pagination, name = "pagination"),
     path('autosuggestbook/', autosuggestbook, name='autosuggestbook'),
 ]

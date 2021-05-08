@@ -49,6 +49,7 @@
 </div>
 
 <div class="container" >
+  <div id="start-posts">
   {% for post in page_obj %}
       <article class="media content-section">
         <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" alt="">
@@ -60,22 +61,33 @@
             <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
             <p class="article-content text">{{ post.content | safe | truncatewords:"300"  }}</p>
             <div class="like-count{{ post.id }} float-left" style="font-family: Arial, Helvetica, sans-serif;"><i class="fas fa-heart" style="color: red;"></i> {{ post.likes.all.count }} Likes</div>
-            <div style="font-family: Arial, Helvetica, sans-serif;"><i class="far fa-comment fa-flip-horizontal ml-3"></i> {{ post.comments.all.count }} Comments</div>
+            <div style="font-family: Arial, Helvetica, sans-serif;"><i class="far fa-comment fa-flip-horizontal ml-3"></i>  <p id="count{{post.id}}"></p> Comments</div>
+            <script>
+              $(document).ready(function() {
+                $.ajax({
+                  method: 'GET',
+                  url: `{% url 'comment-count' post.id %}`,
+                  success: function(data){
+                    $(`#count{{post.id}}`).replaceWith(data['count'])
+                  }
+                });
+              });
+            </script>
             {% if user.is_authenticated %}
             <hr class="mt-0">
               <div class="row">
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto toggle">
                   <form action="{% url 'likes' %}" method="POST" class="like-form" id="{{ post.id }}" >
                     {% csrf_token %}
                     <input type="hidden" name="post_id" value="{{ post.id }}">
                     {% if user not in post.likes.all %}
-                    <button type="submit" value="like" class="like-btn{{ post.id }} btn-down"><i class="far fa-heart" style="color: black;"></i> Like </button>
+                    <button type="submit" value="like" class="like-btn{{ post.id }} btn-down like"><i class="far fa-heart" style="color: black;"></i> Like </button>
                     {% else %}
-                    <button type="submit" value="unlike" class="like-btn{{ post.id }} btn-down"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
+                    <button type="submit" value="unlike" class="like-btn{{ post.id }} btn-down like"><i class="fas fa-heart" style="color: red;"></i> Unlike</button>
                     {% endif %}
                   </form>
                 </div>
-                <div class="col-6 mx-auto">
+                <div class="col-6 mx-auto toggle">
                   <div class="divider"></div>
                   <div class="comment-text">
                     <a href="{% url 'post-detail' post.id %}"><button type="button" class="comment btn-down" id="comment{{ post.id }}"><i class="far fa-comment fa-flip-horizontal ml-2"></i> Comment</button></a>
@@ -90,11 +102,42 @@
         <h3 class="text-center">No posts found!</h3>
       </div>
   {% endfor %}  
+  </div>
 </div>
   
 {% include "forum/pagination.html" %}
 {% endblock content %}
 {%block script%} 
+  <script type="text/javascript">
+    function review_pagination(){
+        $('#pagination a.link-page').each((index, el) => {
+        $(el).click((e) => {
+            e.preventDefault()
+            let page_url = $(el).attr('href')
+            $.ajax({
+            url: page_url,
+            type: "GET",
+            success: (data) => {
+                $('#start-posts').empty()
+                $('#start-posts').append($(data).find('#start-posts').html())
+                $('#pagination').empty()
+                $('#pagination').append($(data).find('#pagination').html())
+                window.scrollTo(0, 0);
+            }
+            })
+        })
+        })
+    }
+
+    $(document).ready(function() {
+        review_pagination()
+    })
+
+    $(document).ajaxStop(function() {
+        review_pagination()
+    })
+    
+  </script>
   <script>
     $(document).ready(function() {
       // Like 

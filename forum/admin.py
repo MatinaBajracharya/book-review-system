@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django_summernote.admin import SummernoteModelAdmin
-from .models import Post, Like
+from .models import Post, Like, Comment
 
 # Register your models here.
 
@@ -9,3 +9,4 @@ class PostAdmin(SummernoteModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Like)
+admin.site.register(Comment)

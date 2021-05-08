@@ -12,6 +12,8 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import PostForm
 from django.http import JsonResponse
 from django.db.models import Count
+from django.contrib import messages
+from django.urls import reverse
 # Create your views here.
 
 def home(request):
@@ -65,17 +67,19 @@ def like_post(request):
 
         data = {
             'value': like.value,
-            # 'likes': post_obj.likes.all().count()
         }
         return JsonResponse(data, safe=False)
 
 class PostListView(ListView):
-    queryset = Post.objects.select_related().annotate(comment_count=Count('comments'))
     model = Post
     template_name = 'forum/forum.html'
     context_object_name = 'posts'
     paginate_by = 5
     ordering = ['-date_posted']
+
+def comment_counter(request, pk):
+    comments = Comment.objects.filter(post=pk).count()
+    return JsonResponse({'count': comments})
 
 class UserPostListView(ListView):
     model = Post
@@ -111,6 +115,7 @@ def details(request, pk):
                 'msg': 'Success'
             })
         else:
+            post.comments.add(request.user)
             Comment(post=post, user = request.user, comment=comment).save()
             return JsonResponse({
                 'msg': 'Success'
@@ -168,4 +173,15 @@ def autosuggest(request):
     mylist = []
     mylist += [x.title for x in queryset]
     return JsonResponse(mylist, safe=False)
+
+def deleteCom(request, pk, post_id):
+    user = request.user.id
+    comm_id = Comment.objects.get(pk = pk)
+    user_id = comm_id.user_id
+    if user == user_id:
+        comm_id.delete()
+        messages.success(request, f'Your comment has been deleted.')
+        return redirect(reverse('post-detail', kwargs={"pk": post_id}))
+    messages.warning(request, f'Sorry, your comment cannot be deleted.')
+    return redirect(reverse('post-detail', kwargs={"pk": post_id}))
 

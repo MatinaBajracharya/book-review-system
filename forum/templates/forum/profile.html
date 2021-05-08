@@ -17,6 +17,7 @@
         <div class="profile-side">
             <div class="user-mail"><i class="fas fa-envelope"></i>{{ u_id.email }}</div>
             <div class="user-bio">
+                <br>
                 <p class="bio">{{ u_id.profile.bio }}</p>
             </div>
             {% if request.user.id == u_id.id %}
@@ -63,7 +64,9 @@
                                 {% endif %}
                             </div>
                             <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
-                            <p class="article-content">{{ post.content | safe | truncatechars:1450 }}</p>
+                            <p class="article-content">{{ post.content | safe }}</p>
+                            <div class="like-count{{ post.id }} float-left" style="font-family: Arial, Helvetica, sans-serif;"><i class="fas fa-heart" style="color: red;"></i> {{ post.likes.all.count }} Likes</div>
+                            <div style="font-family: Arial, Helvetica, sans-serif;"><i class="far fa-comment fa-flip-horizontal ml-3"></i> {{ post.comments.all.count }} Comments</div>
                             </div>
                         </article>
                         {% empty %}
