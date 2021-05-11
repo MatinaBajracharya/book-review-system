@@ -15,6 +15,10 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    # redirecting to post_detail page once it's created.
+    def get_absolute_url(self):
+        return reverse('post-detail', kwargs={'pk': self.pk})
+
     @property
     def num_likes(self):
         return self.likes.all().count()
@@ -22,9 +26,6 @@ class Post(models.Model):
     @property
     def num_comments(self):
         return self.comments.all().count()
-
-    def get_absolute_url(self):
-        return reverse('post-detail', kwargs={'pk': self.pk})
 
 # Creating Tuple
 LIKE_CHOICES = (

@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 import pandas as pd 
 import numpy as np 
 from surprise import Reader, Dataset
-from surprise import SVD
+from surprise import SVD, model_selection, accuracy
 import copy
 
 # Create your views here.
@@ -51,7 +51,7 @@ def book_detail_upload(request):
 
 def book_list(request):
     template = "browse.html"
-    if(request.user.is_authenticated):
+    if(request.user.is_authenticated and Review.objects.filter(user_id = request.user.id).exists()):
         book_list_df = recommendation(request)
     else:
         columns=['id', 'ISBN', 'Book_Title', 'Image_URL_L', 'Book_Author']
@@ -114,8 +114,8 @@ def detail(request, pk):
         form = ReviewForm(request.POST)
         book = get_object_or_404(BookDetail, pk=pk)
         obj = Review.objects.filter(ISBN = pk).order_by('-date_posted')
-        rate_avg = obj.aggregate(Avg('rating')).get('rating__avg')
-        paginator = Paginator(obj, 1)  # 4 review in each page
+        avg_rating = obj.aggregate(Avg('rating')).get('rating__avg')
+        paginator = Paginator(obj, 1)  
         page = request.GET.get('page')
         page_obj = paginator.page(page)
     except BookDetail.DoesNotExist:
@@ -129,11 +129,6 @@ def detail(request, pk):
     except:
         raise Http404("Something went wrong.")
 
-    try:
-        avg_rating = rate_avg
-    except:
-        avg_rating = 0
-
     if request.is_ajax():
         if form.is_valid():
             data = Review()
@@ -146,7 +141,6 @@ def detail(request, pk):
             return JsonResponse({
                 'msg': 'Success'
             })
-        messages.success(request, "Your review has been sent. Thank you for your interest.")
 
     context = {
         'obj': obj,
@@ -190,18 +184,9 @@ def autosuggestbook(request):
 
 def recommendation(request):
     current_id = request.user.id
-    ratings = Review.objects.filter(user = current_id)
     all_ratings = Review.objects.all()
    
-    data = []
     ratings_not_zero = []
-    
-    for rate in ratings:
-        user_id = [int(rate.user_id)]
-        book_id = [str(rate.ISBN.ISBN)]
-        rating_id = [int(rate.rating)]
-
-        data.extend(zip(user_id, book_id, rating_id))
 
     for rate in all_ratings:
         user_id = [int(rate.user_id)]
@@ -210,11 +195,8 @@ def recommendation(request):
 
         ratings_not_zero.extend(zip(user_id, book_id, rating_id))
 
-    new_df = pd.DataFrame(data,columns=["user_id","id","book_rating"])
     books = pd.DataFrame(list(BookDetail.objects.all().values()))    
     ratings_not_zero = pd.DataFrame(ratings_not_zero,columns=["user_id","isbn","book_rating"])
-
-    result = res_to_book(new_df,books)
 
     model = SVD()
 
@@ -247,10 +229,7 @@ def res_to_booktoo(res,books):
         books_names.append(books[books.ISBN == i].Book_Title.values[0])
     return books_names
 
-def trainData(df, model):
-    '''
-        df should contain user id, book id and rating column
-    '''
+def trainData(df, model): #df should contain user id, book id and rating column
     model2 = copy.deepcopy(model)
     reader = Reader(rating_scale=(1, 5))
     dataset = Dataset.load_from_df(df, reader)

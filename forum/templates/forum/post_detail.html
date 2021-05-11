@@ -70,10 +70,12 @@
               {% if user.is_authenticated %}
                 {% for c in comments %}
                   <img class="rounded-circle article-img" src="{{ c.0.user.profile.image.url }}" alt="">
-                  <form action="{% url 'delete-com' c.0.id object.id %}" method="POST" class="float-right">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-down"><i class="fas fa-trash" style="color: red;"></i></button>
-                  </form>
+                  {% if request.user.id == c.0.user.id %}
+                    <form action="{% url 'delete-com' c.0.id object.id %}" method="POST" class="float-right">
+                      {% csrf_token %}
+                      <button type="submit" class="btn-down"><i class="fas fa-trash" style="color: red;"></i></button>
+                    </form>
+                  {% endif %}
                   <p class="user card-text"><strong>{{ c.0.user.username }}</strong> {{c.0.comment}} <br> <small>{{ c.0.time }}</small></p>
                   <p id="{{ c.0.id }}"><button onclick="ReplyForm('{{ c.0.id }}')" class="reply">Reply</button></p>
                     {% for subc in c.1 %}
@@ -138,7 +140,7 @@
     const year = dt.getFullYear();
     var h =  dt.getHours(), m = addZero(dt.getMinutes());
     var _date = n  + ' ' + date + ', ' + year + ', ';
-    var _time = (h > 12) ? (h-12 + ':' + m +' p.m.') : (h-12 + ':' + m +' a.m.');
+    var _time = (h > 12) ? (h-12 + ':' + m +' p.m.') : (h + ':' + m +' a.m.');
     var _datetime = _date + _time;
 
     function ReplyForm(id){

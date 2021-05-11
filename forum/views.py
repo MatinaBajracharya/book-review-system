@@ -29,7 +29,7 @@ def forum(request):
         results = Post.objects.all()
         
     try:
-        paginator = Paginator(results, 4)  # 3 posts in each page
+        paginator = Paginator(results, 4)  
         page = request.GET.get('page')
         page_obj = paginator.page(page)
     except PageNotAnInteger:
@@ -96,7 +96,6 @@ def details(request, pk):
     template = "forum/post_detail.html"
     try:
         post = get_object_or_404(Post, pk=pk)
-        # details = Post.objects.get(pk=pk)
         comments = Comment.objects.filter(post=post).order_by('-id')
     except Post.DoesNotExist:
         raise Http404("Post does not exist.")

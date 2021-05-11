@@ -178,7 +178,7 @@
         const year = dt.getFullYear();
         var h =  dt.getHours(), m = addZero(dt.getMinutes());
         var _date = n  + ' ' + date + ', ' + year + ', ';
-        var _time = (h > 12) ? (h-12 + ':' + m +' p.m.') : (h-12 + ':' + m +' a.m.');
+        var _time = (h > 12) ? (h-12 + ':' + m +' p.m.') : (h + ':' + m +' a.m.');
         var _datetime = _date + _time;
 
         const form = document.getElementById('review-form')
